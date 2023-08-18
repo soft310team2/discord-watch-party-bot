@@ -1,3 +1,7 @@
+# SonarCloud
+sonar-project.properties
+.github/workflows
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
