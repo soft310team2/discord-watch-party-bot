@@ -10,7 +10,7 @@ Well... At least in theory. We are still working on getting everything set up.
 
 ## Please See:
 #### [Code of Conduct](CODE_OF_CONDUCT.md)
-#### [License](LICENSE.md)
+#### [License](LICENSE)
 #### [Contributing](CONTRIBUTING.md)
 
 ## How to use the bot for yourself
