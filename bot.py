@@ -37,22 +37,6 @@ async def popcorn(interaction: nextcord.Interaction):
         response += f"but {kernels} of them are just kernels!"
     await interaction.response.send_message(response)
 
-@bot.slash_command(guild_ids=[GUILD_ID], name="watchlist_create", description="create a new watchlist")
-async def watchlist_create(interaction: nextcord.Interaction, arg):
-    #read the json to get all watchlist list
-    watchlist_file = open(WATCHLISTFILENAME, 'r')
-    watchlist_data = json.load(watchlist_file)
-    watchlist_file.close()
-
-    #write in the new watchlist to the json
-    watchlist_data["watchlists"].append({'name': arg, 'media': []})
-    watchlist_file = open(WATCHLISTFILENAME, 'w')
-    watchlist_file.write(json.dumps(watchlist_data))
-    watchlist_file.close()
-
-    response = f"Created a new watchlist called {arg}. Add movies and shows to your new watchlist!"
-    await interaction.response.send_message(response)
-
 @bot.slash_command(guild_ids=[GUILD_ID], name="watchlist_see_all", description="see all watchlists")
 async def watchlist_see_all(interaction: nextcord.Interaction):
 
@@ -74,6 +58,49 @@ async def watchlist_see_all(interaction: nextcord.Interaction):
                     response += f"- {media}\n"
             response += "\n\n"
 
+    await interaction.response.send_message(response)
+
+@bot.slash_command(guild_ids=[GUILD_ID], name="watchlist_create", description="create a new watchlist")
+async def watchlist_create(interaction: nextcord.Interaction, arg):
+    #read the json to get all watchlist list
+    watchlist_file = open(WATCHLISTFILENAME, 'r')
+    watchlist_data = json.load(watchlist_file)
+    watchlist_file.close()
+
+    #write in the new watchlist to the json
+    watchlist_data["watchlists"].append({'name': arg, 'media': []})
+    watchlist_file = open(WATCHLISTFILENAME, 'w')
+    watchlist_file.write(json.dumps(watchlist_data))
+    watchlist_file.close()
+
+    response = f"Created a new watchlist named {arg}. Add movies and shows to your new watchlist!"
+    await interaction.response.send_message(response)
+
+@bot.slash_command(guild_ids=[GUILD_ID], name="watchlist_delete", description="delete an existing watchlist")
+async def watchlist_create(interaction: nextcord.Interaction, arg):
+    #read the json to get all watchlist list
+    watchlist_file = open(WATCHLISTFILENAME, 'r')
+    watchlist_data = json.load(watchlist_file)
+    watchlist_file.close()
+
+    if len(watchlist_data["watchlists"]) == 0: #Respond if there are no watchlists
+        response = f"Watchlist named {arg} does not exist."
+    else:
+        #remove first occurance
+        found = 0
+        for i in range(len(watchlist_data)):
+            if watchlist_data["watchlists"][i]["name"] == arg:
+                watchlist_data["watchlists"].pop(i)
+                found = 1
+                break
+
+        if found: #write in the edited list to the json
+            watchlist_file = open(WATCHLISTFILENAME, 'w')
+            watchlist_file.write(json.dumps(watchlist_data))
+            watchlist_file.close()
+            response = f"Removed watchlist named {arg}."
+        else: #the mentioned watchlist cannot be found
+            response = f"Watchlist named {arg} does not exist."
     await interaction.response.send_message(response)
 
 bot.run(BOT_TOKEN)
