@@ -77,7 +77,7 @@ async def watchlist_create(interaction: nextcord.Interaction, arg):
     await interaction.response.send_message(response)
 
 @bot.slash_command(guild_ids=[GUILD_ID], name="watchlist_delete", description="delete an existing watchlist")
-async def watchlist_create(interaction: nextcord.Interaction, arg):
+async def watchlist_delete(interaction: nextcord.Interaction, arg):
     #read the json to get all watchlist list
     watchlist_file = open(WATCHLISTFILENAME, 'r')
     watchlist_data = json.load(watchlist_file)
