@@ -175,6 +175,61 @@ async def watchlist_join(interaction: nextcord.Interaction, watchlist_name):
         response = f"Watchlist named {watchlist_name} does not exist"
     await interaction.response.send_message(response)
 
+@bot.slash_command(guild_ids=[GUILD_ID], name="watchlist_leave", description="leave from a joined watchlist")
+async def watchlist_leave(interaction: nextcord.Interaction, watchlist_name):
+    #read the json to get all watchlist list
+    watchlist_file = open(WATCHLISTFILENAME, 'r')
+    watchlist_data = json.load(watchlist_file)
+    watchlist_file.close()
+
+    # Check if the watchlist exists
+    user_id = interaction.user.id
+    found = 0
+    for watchlist in watchlist_data["watchlists"]:
+        if watchlist["name"] == watchlist_name:
+            found = 1
+            # Check if user id is in the participants list
+            if (user_id in watchlist["participants"]):
+                watchlist["participants"].remove(user_id)
+                #write the change to json
+                watchlist_file = open(WATCHLISTFILENAME, 'w')
+                watchlist_file.write(json.dumps(watchlist_data))
+                watchlist_file.close()
+                response = f"You have been removed from the {watchlist_name} watchlist."
+                break
+            else:
+                response = "You are not currently in this watchlist"
+                break
+                
+    if not found:
+        response = f"Watchlist named {watchlist_name} does not exist"
+    await interaction.response.send_message(response)
+
+@bot.slash_command(guild_ids=[GUILD_ID], name="watchlist_participants", description="view a watchlist's participants")
+async def watchlist_participants(interaction: nextcord.Interaction, watchlist_name):
+    #read the json to get all watchlist list
+    watchlist_file = open(WATCHLISTFILENAME, 'r')
+    watchlist_data = json.load(watchlist_file)
+    watchlist_file.close()
+
+    # Find watchlist
+    found = 0
+    for watchlist in watchlist_data["watchlists"]:
+        if watchlist["name"] == watchlist_name:
+            found = 1
+            # Print Members
+            response = f"Participants of {watchlist_name} watchlist:\n"
+            for user_id in watchlist["participants"]:
+                user = await bot.fetch_user(user_id) # This is an api call, must use await then get the name component step by step
+                user_name = user.name
+                response += "- " + user_name + "\n"
+            if len(watchlist["participants"]) == 0:
+                response = f"There are no participants in {watchlist_name} yet  :("
+
+    if not found:
+        response = f"Watchlist named {watchlist_name} does not exist"
+    await interaction.response.send_message(response)
+    
 @bot.slash_command(guild_ids=[GUILD_ID], name="watchlist_notifyall", description="notify all participants of a watchlist")
 async def watchlist_notifyall(interaction: nextcord.Interaction, watchlist_name):
     #read the json to get all watchlist list
@@ -187,7 +242,7 @@ async def watchlist_notifyall(interaction: nextcord.Interaction, watchlist_name)
     for watchlist in watchlist_data["watchlists"]:
         if watchlist["name"] == watchlist_name:
             found = 1
-            mentions = ' '.join(f'<@{user_id}>' for user_id in watchlist["participants"]) #Generate string of mentions in comma-separated manner
+            mentions = ' '.join(f'<@{user_id}>' for user_id in watchlist["participants"]) #Generate string of mentions in space-separated manner
             response = f'A watch party for the {watchlist_name} watchlist is starting soon! {mentions}'
 
     if not found:
