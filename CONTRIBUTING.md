@@ -14,7 +14,7 @@ email, or any other method with the owners of this repository before making a ch
   below).
 - All additions or modifications to code should include associated tests.
 
-### Required pacakages
+### Required packages
 - Python 3.7+
 - pip package manager
 After `git clone` ing this repository, you will need to:
