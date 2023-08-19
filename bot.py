@@ -175,4 +175,23 @@ async def watchlist_join(interaction: nextcord.Interaction, watchlist_name):
         response = f"Watchlist named {watchlist_name} does not exist"
     await interaction.response.send_message(response)
 
+@bot.slash_command(guild_ids=[GUILD_ID], name="watchlist_notifyall", description="notify all participants of a watchlist")
+async def watchlist_notifyall(interaction: nextcord.Interaction, watchlist_name):
+    #read the json to get all watchlist list
+    watchlist_file = open(WATCHLISTFILENAME, 'r')
+    watchlist_data = json.load(watchlist_file)
+    watchlist_file.close()
+
+    #add participant to watchlist
+    found = 0
+    for watchlist in watchlist_data["watchlists"]:
+        if watchlist["name"] == watchlist_name:
+            found = 1
+            mentions = ' '.join(f'<@{user_id}>' for user_id in watchlist["participants"]) #Generate string of mentions in comma-separated manner
+            response = f'A watch party for the {watchlist_name} watchlist is starting soon! {mentions}'
+
+    if not found:
+        response = f"Watchlist named {watchlist_name} does not exist"
+    await interaction.response.send_message(response)
+
 bot.run(BOT_TOKEN)
