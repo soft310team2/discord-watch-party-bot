@@ -176,7 +176,7 @@ async def watchlist_join(interaction: nextcord.Interaction, watchlist_name):
     await interaction.response.send_message(response)
 
 @bot.slash_command(guild_ids=[GUILD_ID], name="watchlist_leave", description="leave from a joined watchlist")
-async def watchlist_delete(interaction: nextcord.Interaction, watchlist_name):
+async def watchlist_leave(interaction: nextcord.Interaction, watchlist_name):
     #read the json to get all watchlist list
     watchlist_file = open(WATCHLISTFILENAME, 'r')
     watchlist_data = json.load(watchlist_file)
