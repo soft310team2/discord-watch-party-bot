@@ -1,22 +1,20 @@
 name: Build
-
 on:
   push:
+    branches:
+      - main
   pull_request:
     types: [opened, synchronize, reopened]
-
 jobs:
-  build:
-    name: Build
+  sonarcloud:
+    name: SonarCloud
     runs-on: ubuntu-latest
     steps:
-      - name: 🛎️ Checkout
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
-          persist-credentials: false
-
-      - name: 🔊 Upload code coverage to GitHub Artifacts (for SonarCloud)
-        uses: actions/upload-artifact@v2
-        with:
-          name: code-coverage
-          path: coverage/lcov.info
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
