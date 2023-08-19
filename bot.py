@@ -159,7 +159,7 @@ async def watchlist_add(interaction: nextcord.Interaction, media_name, watchlist
 async def watchlist_delete_media(interaction: nextcord.Interaction,
                                    media_name, watchlist_name):
     await delete_media(interaction, media_name, watchlist_name
-                           )  # Call the function from commands.py
+                           )
 
 @bot.slash_command(guild_ids=[GUILD_ID], name="watchlist_join", description="join an existing watchlist")
 async def watchlist_join(interaction: nextcord.Interaction, watchlist_name):
