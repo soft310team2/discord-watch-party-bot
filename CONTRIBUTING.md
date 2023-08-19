@@ -14,6 +14,15 @@ email, or any other method with the owners of this repository before making a ch
   below).
 - All additions or modifications to code should include associated tests.
 
+### Required pacakages
+- Python 3.7+
+- pip package manager
+After `git clone` ing this repository, you will need to:
+`pip install python-dotenv`
+`pip install nextcord`
+
+We also require that SonarLint is used during development. 
+
 ### Working with branches
 
 Make a branch:
