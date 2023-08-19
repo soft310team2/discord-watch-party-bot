@@ -109,14 +109,27 @@ async def watchlist_join(interaction: nextcord.Interaction, watchlist_name):
     watchlist_data = json.load(watchlist_file)
     watchlist_file.close()
 
-    # Add participant to watchlist
-    print(interaction.user)
-    
+    #add participant to watchlist
+    user_id = interaction.user.id
+    found = 0
+    for watchlist in watchlist_data["watchlists"]:
+        if watchlist["name"] == watchlist_name:
+            found = 1
+            #check duplication
+            if (user_id in watchlist["participants"]):
+                response = "You are already in this watchlist."
+                break
+            else:
+                watchlist["participants"].append(user_id)
+                #write the change to json
+                watchlist_file = open(WATCHLISTFILENAME, 'w')
+                watchlist_file.write(json.dumps(watchlist_data))
+                watchlist_file.close()
+                response = f"You have joined the {watchlist_name} watchlist."
+                break
 
-    watchlist_file = open(WATCHLISTFILENAME, 'w')
-    watchlist_file.write(json.dumps(watchlist_data))
-    watchlist_file.close()
-    response = "Removed watchlist named."
+    if not found:
+        response = f"Watchlist named {watchlist_name} does not exist"
     await interaction.response.send_message(response)
 
 bot.run(BOT_TOKEN)
