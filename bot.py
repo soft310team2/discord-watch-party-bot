@@ -83,23 +83,19 @@ async def watchlist_delete(interaction: nextcord.Interaction, watchlist_name):
     watchlist_data = json.load(watchlist_file)
     watchlist_file.close()
 
-    if len(watchlist_data["watchlists"]) == 0:
-        response = f"Watchlist named {watchlist_name} does not exist."
-    else:
-        found = 0
-        for i in range(len(watchlist_data)):
-            if watchlist_data["watchlists"][i]["name"] == watchlist_name:
-                watchlist_data["watchlists"].pop(i)
-                found = 1
-                break
-
-        if found:
+    # Find watchlist
+    found = 0
+    for watchlist in watchlist_data["watchlists"]:
+        if watchlist["name"] == watchlist_name:
+            found = 1
+            watchlist_data["watchlists"].remove(watchlist)
             watchlist_file = open(WATCHLISTFILENAME, 'w')
             watchlist_file.write(json.dumps(watchlist_data))
             watchlist_file.close()
             response = f"Removed watchlist named {watchlist_name}."
-        else: 
-            response = f"Watchlist named {watchlist_name} does not exist."
+
+    if not found:
+        response = f"Watchlist named {watchlist_name} does not exist"
     await interaction.response.send_message(response)
 
 @bot.slash_command(guild_ids=[GUILD_ID],
