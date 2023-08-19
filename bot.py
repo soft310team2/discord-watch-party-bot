@@ -83,10 +83,9 @@ async def watchlist_delete(interaction: nextcord.Interaction, arg):
     watchlist_data = json.load(watchlist_file)
     watchlist_file.close()
 
-    if len(watchlist_data["watchlists"]) == 0: #Respond if there are no watchlists
+    if len(watchlist_data["watchlists"]) == 0:
         response = f"Watchlist named {arg} does not exist."
     else:
-        #remove first occurance
         found = 0
         for i in range(len(watchlist_data)):
             if watchlist_data["watchlists"][i]["name"] == arg:
@@ -94,12 +93,12 @@ async def watchlist_delete(interaction: nextcord.Interaction, arg):
                 found = 1
                 break
 
-        if found: #write in the edited list to the json
+        if found:
             watchlist_file = open(WATCHLISTFILENAME, 'w')
             watchlist_file.write(json.dumps(watchlist_data))
             watchlist_file.close()
             response = f"Removed watchlist named {arg}."
-        else: #the mentioned watchlist cannot be found
+        else: 
             response = f"Watchlist named {arg} does not exist."
     await interaction.response.send_message(response)
 
