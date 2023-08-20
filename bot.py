@@ -44,18 +44,18 @@ async def popcorn(interaction: nextcord.Interaction):
 @bot.slash_command(guild_ids=[GUILD_ID], name="help", description="lists all commands and descriptions")
 async def help(interaction: nextcord.Interaction):
     response = ""
-    response += "/watchlist_create - create a new watchlist\n"
-    response += "/watchlist_delete - delete an existing watchlist\n"
-    response += "/watchlist_see_all - see all watchlists\n"
-    response += "/watchlist_add - add a movie or show to a watchlist\n"
-    response += "/watchlist_delete_media - remove a movie or show from a watchlist\n"
-    response += "/watchlist_clear - remove all media from a watchlist\n"
-    response += "/watchlist_view - view the contents of a wishlist\n"
-    response += "/watchlist_join - join an existing watchlist\n"
-    response += "/watchlist_leave - leave from a joined watchlist\n"
-    response += "/watchlist_participants - view a watchlist's participants\n"
-    response += "/watchlist_notifyall - notify all participants of a watchlist\n"
-    response += "/watchlist_choose - select a random item from a watchlist\n"
+    response += "/watchlist_create \ncreate a new watchlist\n\n"
+    response += "/watchlist_delete \ndelete an existing watchlist\n\n"
+    response += "/watchlist_see_all \nsee all watchlists\n\n"
+    response += "/watchlist_add \nadd a movie or show to a watchlist\n\n"
+    response += "/watchlist_delete_media \nremove a movie or show from a watchlist\n\n"
+    response += "/watchlist_clear \nremove all media from a watchlist\n\n"
+    response += "/watchlist_view \nview the contents of a wishlist\n\n"
+    response += "/watchlist_join \njoin an existing watchlist\n\n"
+    response += "/watchlist_leave \nleave from a joined watchlist\n\n"
+    response += "/watchlist_participants \nview a watchlist's participants\n\n"
+    response += "/watchlist_notifyall \nnotify all participants of a watchlist\n\n"
+    response += "/watchlist_choose \nselect a random item from a watchlist\n\n"
     await interaction.response.send_message(response)
 
 
