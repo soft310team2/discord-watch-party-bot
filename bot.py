@@ -186,6 +186,37 @@ async def watchlist_delete_media(interaction: nextcord.Interaction,
                            )
     
 # ---------------------------------------------------------------------------
+# Media Commands - Select a random media from watchlist
+# ---------------------------------------------------------------------------
+
+@bot.slash_command(guild_ids=[GUILD_ID],
+                   name="watchlist_choose",
+                   description="select a random item from a watchlist")
+async def watchlist_choose(interaction: nextcord.Interaction, watchlist_name):
+
+    watchlist_file = open(WATCHLISTFILENAME, 'r')
+    watchlist_data = json.load(watchlist_file)
+    watchlist_file.close()
+
+    watchlist_exists = False
+
+    for watchlist in watchlist_data["watchlists"]:
+        if watchlist["name"] == watchlist_name:
+            watchlist_exists = True
+            watchlist_length = len(watchlist["media"])
+            if watchlist_length == 0:
+                response = f"The **{watchlist_name}** watchlist is empty. \nYou can add items to it using '/watchlist_add <media_name> {watchlist_name}'"
+            else:
+                selected_media = random.choice(watchlist["media"])
+                response = f"Let's watch **{selected_media}** \nTime to get out the popcorn!"
+            
+
+    if not watchlist_exists:
+        response = f"The **{watchlist_name}** watchlist does not exist! \nYou can create it with `/watchlist_create {watchlist_name}`"
+
+    await interaction.response.send_message(response)
+    
+# ---------------------------------------------------------------------------
 # Participant Commands - Join, leave, view or notifty watchlist participants
 # ---------------------------------------------------------------------------
 
