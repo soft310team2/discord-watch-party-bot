@@ -208,7 +208,7 @@ async def watchlist_choose(interaction: nextcord.Interaction, watchlist_name):
                 response = f"The **{watchlist_name}** watchlist is empty. \nYou can add items to it using '/watchlist_add <media_name> {watchlist_name}'"
             else:
                 selected_media = random.choice(watchlist["media"])
-                response = f"Selected media: **{selected_media}** \nTime to get out the popcorn!"
+                response = f"Let's watch **{selected_media}** \nTime to get out the popcorn!"
             
 
     if not watchlist_exists:
