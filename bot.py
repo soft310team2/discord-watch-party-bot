@@ -43,19 +43,19 @@ async def popcorn(interaction: nextcord.Interaction):
 
 @bot.slash_command(guild_ids=[GUILD_ID], name="help", description="lists all commands and descriptions")
 async def help(interaction: nextcord.Interaction):
-    response = ""
-    response += "/watchlist_create \ncreate a new watchlist\n\n"
-    response += "/watchlist_delete \ndelete an existing watchlist\n\n"
-    response += "/watchlist_see_all \nsee all watchlists\n\n"
-    response += "/watchlist_add \nadd a movie or show to a watchlist\n\n"
-    response += "/watchlist_delete_media \nremove a movie or show from a watchlist\n\n"
-    response += "/watchlist_clear \nremove all media from a watchlist\n\n"
-    response += "/watchlist_view \nview the contents of a wishlist\n\n"
-    response += "/watchlist_join \njoin an existing watchlist\n\n"
-    response += "/watchlist_leave \nleave from a joined watchlist\n\n"
-    response += "/watchlist_participants \nview a watchlist's participants\n\n"
-    response += "/watchlist_notifyall \nnotify all participants of a watchlist\n\n"
-    response += "/watchlist_choose \nselect a random item from a watchlist\n\n"
+    response = "Here are all of my commands:\n\n"
+    response += "/watchlist_create \n- create a new watchlist\n\n"
+    response += "/watchlist_delete \n- delete an existing watchlist\n\n"
+    response += "/watchlist_see_all \n- see all watchlists\n\n"
+    response += "/watchlist_add \n- add a movie or show to a watchlist\n\n"
+    response += "/watchlist_delete_media \n- remove a movie or show from a watchlist\n\n"
+    response += "/watchlist_clear \n- remove all media from a watchlist\n\n"
+    response += "/watchlist_view \n- view the contents of a wishlist\n\n"
+    response += "/watchlist_join \n- join an existing watchlist\n\n"
+    response += "/watchlist_leave \n- leave from a joined watchlist\n\n"
+    response += "/watchlist_participants \n- view a watchlist's participants\n\n"
+    response += "/watchlist_notifyall \n- notify all participants of a watchlist\n\n"
+    response += "/watchlist_choose \n- select a random item from a watchlist\n\n"
     await interaction.response.send_message(response)
 
 
