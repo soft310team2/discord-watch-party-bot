@@ -39,6 +39,30 @@ async def popcorn(interaction: nextcord.Interaction):
         response += f"but {kernels} of them are just kernels!"
     await interaction.response.send_message(response)
 
+# Help Command
+
+@bot.slash_command(guild_ids=[GUILD_ID], name="help", description="lists all commands and descriptions")
+async def help(interaction: nextcord.Interaction):
+    response = "Here are all of my commands:\n\n"
+    response += "/watchlist_create \n- create a new watchlist\n\n"
+    response += "/watchlist_delete \n- delete an existing watchlist\n\n"
+    response += "/watchlist_see_all \n- see all watchlists\n\n"
+    response += "/watchlist_add \n- add a movie or show to a watchlist\n\n"
+    response += "/watchlist_delete_media \n- remove a movie or show from a watchlist\n\n"
+    response += "/watchlist_clear \n- remove all media from a watchlist\n\n"
+    response += "/watchlist_view \n- view the contents of a wishlist\n\n"
+    response += "/watchlist_join \n- join an existing watchlist\n\n"
+    response += "/watchlist_leave \n- leave from a joined watchlist\n\n"
+    response += "/watchlist_participants \n- view a watchlist's participants\n\n"
+    response += "/watchlist_notifyall \n- notify all participants of a watchlist\n\n"
+    response += "/watchlist_choose \n- select a random item from a watchlist\n\n"
+    await interaction.response.send_message(response)
+
+
+# ---------------------------------------------------------------------------
+# Watchlist Commands - Create, delete and see watchlists
+# ---------------------------------------------------------------------------
+
 @bot.slash_command(guild_ids=[GUILD_ID], name="watchlist_see_all", description="see all watchlists")
 async def watchlist_see_all(interaction: nextcord.Interaction):
 
@@ -160,6 +184,10 @@ async def watchlist_delete_media(interaction: nextcord.Interaction,
                                    media_name, watchlist_name):
     await delete_media(interaction, media_name, watchlist_name
                            )
+    
+# ---------------------------------------------------------------------------
+# Participant Commands - Join, leave, view or notifty watchlist participants
+# ---------------------------------------------------------------------------
 
 @bot.slash_command(guild_ids=[GUILD_ID], name="watchlist_join", description="join an existing watchlist")
 async def watchlist_join(interaction: nextcord.Interaction, watchlist_name):
