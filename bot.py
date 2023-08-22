@@ -88,18 +88,28 @@ async def watchlist_see_all(interaction: nextcord.Interaction):
 
 @bot.slash_command(guild_ids=[GUILD_ID], name="watchlist_create", description="create a new watchlist")
 async def watchlist_create(interaction: nextcord.Interaction, watchlist_name):
-    #read the json to get all watchlist list
+    #read the json to get all watchlist lists
     watchlist_file = open(WATCHLISTFILENAME, 'r')
     watchlist_data = json.load(watchlist_file)
     watchlist_file.close()
 
-    #write in the new watchlist to the json
-    watchlist_data["watchlists"].append({'name': watchlist_name, 'media': [], 'participants': []})
-    watchlist_file = open(WATCHLISTFILENAME, 'w')
-    watchlist_file.write(json.dumps(watchlist_data))
-    watchlist_file.close()
+    # Check if the watchlist exists already
+    watchlist_exists = False
+    for watchlist in watchlist_data["watchlists"]:
+        if watchlist["name"] == watchlist_name:
+            watchlist_exists = True
 
-    response = f"Created a new watchlist named {watchlist_name}. Add movies and shows to your new watchlist!"
+    # Only create the watchlist if it does not already exist
+    if watchlist_exists:
+        response = f"A watchlist named {watchlist_name} already exists!"
+    else:
+        # write in the new watchlist to the json
+        watchlist_data["watchlists"].append({'name': watchlist_name, 'media': [], 'participants': []})
+        watchlist_file = open(WATCHLISTFILENAME, 'w')
+        watchlist_file.write(json.dumps(watchlist_data))
+        watchlist_file.close()
+        response = f"Created a new watchlist named {watchlist_name}. Add movies and shows to your new watchlist!"
+
     await interaction.response.send_message(response)
 
 @bot.slash_command(guild_ids=[GUILD_ID], name="watchlist_delete", description="delete an existing watchlist")
