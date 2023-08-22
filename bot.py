@@ -115,11 +115,19 @@ async def watchlist_create(interaction: nextcord.Interaction, watchlist_name):
 
 @bot.slash_command(guild_ids=[GUILD_ID], name="watchlist_delete_all", description="delete all existing watchlists")
 async def watchlist_delete_all(interaction: nextcord.Interaction):
-    watchlist_file = open(WATCHLISTFILENAME, 'w')
-    watchlist_file.write(json.dumps({"watchlists": []}))
+    #read the json to get all watchlist list
+    watchlist_file = open(WATCHLISTFILENAME, 'r')
+    watchlist_data = json.load(watchlist_file)
     watchlist_file.close()
 
-    response = "Removed all watchlists, use /watchlist_create to make a new one!"
+    if len(watchlist_data["watchlists"]) == 0:
+        response = "There are no watchlists for me to delete ¯\_(ツ)_/¯"
+    else:
+        watchlist_file = open(WATCHLISTFILENAME, 'w')
+        watchlist_file.write(json.dumps({"watchlists": []}))
+        watchlist_file.close()
+        response = "Removed all watchlists, use /watchlist_create to make a new one!"
+
     await interaction.response.send_message(response)
 
 @bot.slash_command(guild_ids=[GUILD_ID], name="watchlist_delete", description="delete an existing watchlist")
