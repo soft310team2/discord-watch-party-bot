@@ -15,6 +15,9 @@ intents = nextcord.Intents.default()
 intents.message_content = True
 bot = commands.Bot(intents=intents)
 WATCHLISTFILENAME = "watchlist.json"
+# 8 = Admin
+# 1024 = View Channel (Pretty much everyone)
+EDIT_PERMISSION = 1024
 # Called once bot is ready for further action.
 @bot.event
 async def on_ready():
@@ -87,7 +90,9 @@ async def watchlist_see_all(interaction: nextcord.Interaction):
 
     await interaction.response.send_message(response)
 
-@bot.slash_command(guild_ids=[GUILD_ID], name="watchlist_create", description="create a new watchlist")
+@bot.slash_command(guild_ids=[GUILD_ID], name="watchlist_create", 
+                   description="create a new watchlist",
+                   default_member_permissions=EDIT_PERMISSION)
 async def watchlist_create(interaction: nextcord.Interaction, watchlist_name):
     #read the json to get all watchlist lists
     watchlist_file = open(WATCHLISTFILENAME, 'r')
@@ -113,7 +118,10 @@ async def watchlist_create(interaction: nextcord.Interaction, watchlist_name):
 
     await interaction.response.send_message(response)
 
-@bot.slash_command(guild_ids=[GUILD_ID], name="watchlist_delete_all", description="delete all existing watchlists")
+@bot.slash_command(guild_ids=[GUILD_ID], 
+                   name="watchlist_delete_all", 
+                   description="delete all existing watchlists", 
+                   default_member_permissions=EDIT_PERMISSION)
 async def watchlist_delete_all(interaction: nextcord.Interaction):
     #read the json to get all watchlist list
     watchlist_file = open(WATCHLISTFILENAME, 'r')
@@ -130,7 +138,9 @@ async def watchlist_delete_all(interaction: nextcord.Interaction):
 
     await interaction.response.send_message(response)
 
-@bot.slash_command(guild_ids=[GUILD_ID], name="watchlist_delete", description="delete an existing watchlist")
+@bot.slash_command(guild_ids=[GUILD_ID], name="watchlist_delete", 
+                   description="delete an existing watchlist",
+                   default_member_permissions=EDIT_PERMISSION)
 async def watchlist_delete(interaction: nextcord.Interaction, watchlist_name):
     #read the json to get all watchlist list
     watchlist_file = open(WATCHLISTFILENAME, 'r')
@@ -159,7 +169,8 @@ async def watchlist_delete(interaction: nextcord.Interaction, watchlist_name):
 
 @bot.slash_command(guild_ids=[GUILD_ID],
                    name="watchlist_add",
-                   description="add a movie or show to a watchlist")
+                   description="add a movie or show to a watchlist",
+                   default_member_permissions=EDIT_PERMISSION)
 async def watchlist_add(interaction: nextcord.Interaction, media_name, watchlist_name):
     """
     Adds a movie or show to a specified watchlist.
@@ -207,7 +218,8 @@ async def watchlist_add(interaction: nextcord.Interaction, media_name, watchlist
 
 @bot.slash_command(guild_ids=[GUILD_ID],
                    name="watchlist_delete_media",
-                   description="remove a movie or show from a watchlist")
+                   description="remove a movie or show from a watchlist",
+                   default_member_permissions=EDIT_PERMISSION)
 async def watchlist_delete_media(interaction: nextcord.Interaction,
                                    media_name, watchlist_name):
     await delete_media(interaction, media_name, watchlist_name
