@@ -22,7 +22,7 @@ Version 3.11.4 is recommended for running this bot and contributing to its devel
 ### 3. Set up Python Environment
 Set up a Python environment for the code editor of your choice. It is recommended to use a virtual Python environment to avoid installing packages globally. For help with this simply google the name of your preferred IDE and "virtual python environment".
 ### 4. Install Dependencies
-In the root folder of the project - the one with your .venv folder in it - use the terminal to install nextcord using `pip install nextcord`, and install dotenv using `pip install dotenv`. You can check your .venv folder's Lib folder to see that these dependencies have been installed successfully in your virtual environment.
+In the root folder of the project - the one with your .venv folder in it - use the terminal to install nextcord using `pip install nextcord`, and install dotenv using `pip install python-dotenv`. You can check your .venv folder's Lib folder to see that these dependencies have been installed successfully in your virtual environment.
 ### 5. Start using the bot or make your own
 #### Use The Existing Bot (not currently recommended):
 Use the existing Bot: You can invite the existing bot to your Discord server via this link: [Invite Popcorn Bot](https://discord.com/api/oauth2/authorize?client_id=1138633131432366194&permissions=18685255740480&scope=bot%20applications.commands). The bot will need to be invited by a member of the server with admin priviledges. NOTE: The bot currently has access to message content for debugging purposes.
