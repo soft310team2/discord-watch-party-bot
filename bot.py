@@ -4,6 +4,7 @@ import nextcord
 from nextcord.ext import commands
 import random
 import json
+import utils
 
 
 load_dotenv()
@@ -46,19 +47,19 @@ async def popcorn(interaction: nextcord.Interaction):
 @bot.slash_command(guild_ids=[GUILD_ID], name="help", description="lists all commands and descriptions")
 async def help(interaction: nextcord.Interaction):
     response = "Here are all of my commands:\n\n"
-    response += "/watchlist_create \n- create a new watchlist\n\n"
-    response += "/watchlist_delete \n- delete an existing watchlist\n\n"
-    response += "/watchlist_delete_all \n- delete all existing watchlists\n\n"
-    response += "/watchlist_see_all \n- see all watchlists\n\n"
-    response += "/watchlist_add \n- add a movie or show to a watchlist\n\n"
-    response += "/watchlist_delete_media \n- remove a movie or show from a watchlist\n\n"
-    response += "/watchlist_clear \n- remove all media from a watchlist\n\n"
-    response += "/watchlist_view \n- view the contents of a wishlist\n\n"
-    response += "/watchlist_join \n- join an existing watchlist\n\n"
-    response += "/watchlist_leave \n- leave from a joined watchlist\n\n"
-    response += "/watchlist_participants \n- view a watchlist's participants\n\n"
-    response += "/watchlist_notifyall \n- notify all participants of a watchlist\n\n"
-    response += "/watchlist_choose \n- select a random item from a watchlist\n\n"
+    response += "/create \n- create a new watchlist\n\n"
+    response += "/delete \n- delete an existing watchlist\n\n"
+    response += "/deleteall \n- delete all existing watchlists\n\n"
+    response += "/seeall \n- see all watchlists\n\n"
+    response += "/add \n- add a movie or show to a watchlist\n\n"
+    response += "/remove \n- remove a movie or show from a watchlist\n\n"
+    response += "/clear \n- remove all media from a watchlist\n\n"
+    response += "/view \n- view the contents of a wishlist\n\n"
+    response += "/join \n- join an existing watchlist\n\n"
+    response += "/leave \n- leave from a joined watchlist\n\n"
+    response += "/participants \n- view a watchlist's participants\n\n"
+    response += "/poke \n- notify all participants of a watchlist\n\n"
+    response += "/choose \n- select a random item from a watchlist\n\n"
     await interaction.response.send_message(response)
 
 
@@ -66,15 +67,13 @@ async def help(interaction: nextcord.Interaction):
 # Watchlist Commands - Create, delete and see watchlists
 # ---------------------------------------------------------------------------
 
-@bot.slash_command(guild_ids=[GUILD_ID], name="watchlist_see_all", description="see all watchlists")
+@bot.slash_command(guild_ids=[GUILD_ID], name="seeall", description="see all watchlists")
 async def watchlist_see_all(interaction: nextcord.Interaction):
 
-    watchlist_file = open(WATCHLISTFILENAME, 'r')
-    watchlist_data = json.load(watchlist_file)
-    watchlist_file.close()
+    watchlist_data = utils.read_watchlist_file(WATCHLISTFILENAME)
 
     if len(watchlist_data["watchlists"]) == 0: #Respond if there are no watchlists
-        response = "You have no watchlists right now, create a watchlist with /watchlist_create and you will see it here!"
+        response = "You have no watchlists right now, create a watchlist with /create and you will see it here!"
     else:
         response = "Here are all of your watchlists!\n\n"
         for watchlist in watchlist_data["watchlists"]: #Print every watchlist
@@ -89,14 +88,12 @@ async def watchlist_see_all(interaction: nextcord.Interaction):
 
     await interaction.response.send_message(response)
 
-@bot.slash_command(guild_ids=[GUILD_ID], name="watchlist_create", 
+@bot.slash_command(guild_ids=[GUILD_ID], name="create", 
                    description="create a new watchlist",
                    default_member_permissions=EDIT_PERMISSION)
 async def watchlist_create(interaction: nextcord.Interaction, watchlist_name):
     #read the json to get all watchlist lists
-    watchlist_file = open(WATCHLISTFILENAME, 'r')
-    watchlist_data = json.load(watchlist_file)
-    watchlist_file.close()
+    watchlist_data = utils.read_watchlist_file(WATCHLISTFILENAME)
 
     # Check if the watchlist exists already
     watchlist_exists = False
@@ -110,54 +107,43 @@ async def watchlist_create(interaction: nextcord.Interaction, watchlist_name):
     else:
         # write in the new watchlist to the json
         watchlist_data["watchlists"].append({'name': watchlist_name, 'media': [], 'participants': []})
-        watchlist_file = open(WATCHLISTFILENAME, 'w')
-        watchlist_file.write(json.dumps(watchlist_data))
-        watchlist_file.close()
+        utils.write_watchlist_file(WATCHLISTFILENAME, watchlist_data)
         response = f"Created a new watchlist named {watchlist_name}. Add movies and shows to your new watchlist!"
 
     await interaction.response.send_message(response)
 
 @bot.slash_command(guild_ids=[GUILD_ID], 
-                   name="watchlist_delete_all", 
+                   name="deleteall", 
                    description="delete all existing watchlists", 
                    default_member_permissions=EDIT_PERMISSION)
 async def watchlist_delete_all(interaction: nextcord.Interaction):
     #read the json to get all watchlist list
-    watchlist_file = open(WATCHLISTFILENAME, 'r')
-    watchlist_data = json.load(watchlist_file)
-    watchlist_file.close()
-
+    watchlist_data = utils.read_watchlist_file(WATCHLISTFILENAME)
     if len(watchlist_data["watchlists"]) == 0:
         response = "There are no watchlists for me to delete ¯\_(ツ)_/¯"
     else:
         watchlist_file = open(WATCHLISTFILENAME, 'w')
         watchlist_file.write(json.dumps({"watchlists": []}))
         watchlist_file.close()
-        response = "Removed all watchlists, use /watchlist_create to make a new one!"
+        response = "Removed all watchlists, use /create to make a new one!"
 
     await interaction.response.send_message(response)
 
-@bot.slash_command(guild_ids=[GUILD_ID], name="watchlist_delete", 
+@bot.slash_command(guild_ids=[GUILD_ID], name="delete", 
                    description="delete an existing watchlist",
                    default_member_permissions=EDIT_PERMISSION)
 async def watchlist_delete(interaction: nextcord.Interaction, watchlist_name):
     #read the json to get all watchlist list
-    watchlist_file = open(WATCHLISTFILENAME, 'r')
-    watchlist_data = json.load(watchlist_file)
-    watchlist_file.close()
+    watchlist_data = utils.read_watchlist_file(WATCHLISTFILENAME)
 
     # Find watchlist
-    found = 0
-    for watchlist in watchlist_data["watchlists"]:
-        if watchlist["name"] == watchlist_name:
-            found = 1
+    watchlist = utils.get_watchlist(watchlist_data, watchlist_name)
+    if(watchlist != None):
             watchlist_data["watchlists"].remove(watchlist)
-            watchlist_file = open(WATCHLISTFILENAME, 'w')
-            watchlist_file.write(json.dumps(watchlist_data))
-            watchlist_file.close()
+            utils.write_watchlist_file(WATCHLISTFILENAME, watchlist_data)
             response = f"Removed watchlist named {watchlist_name}."
 
-    if not found:
+    else:
         response = f"Watchlist named {watchlist_name} does not exist"
     await interaction.response.send_message(response)
 
@@ -167,7 +153,7 @@ async def watchlist_delete(interaction: nextcord.Interaction, watchlist_name):
 # ---------------------------------------------------------------------------
 
 @bot.slash_command(guild_ids=[GUILD_ID],
-                   name="watchlist_add",
+                   name="add",
                    description="add a movie or show to a watchlist",
                    default_member_permissions=EDIT_PERMISSION)
 async def watchlist_add(interaction: nextcord.Interaction, media_name, watchlist_name):
@@ -183,30 +169,22 @@ async def watchlist_add(interaction: nextcord.Interaction, media_name, watchlist
     None
     """
     # Read the JSON data
-    watchlist_file = open(WATCHLISTFILENAME, 'r')
-    watchlist_data = json.load(watchlist_file)
-    watchlist_file.close()
+    watchlist_data = utils.read_watchlist_file(WATCHLISTFILENAME)
 
     # Check if the watchlist exists
-    watchlist_exists = False
-    for watchlist in watchlist_data["watchlists"]:
-        if watchlist["name"] == watchlist_name:
-            watchlist_exists = True
+    watchlist = utils.get_watchlist(watchlist_data, watchlist_name)
+    if(watchlist != None):
             # Check if media already exists in watchlist
             if media_name not in watchlist["media"]:
                 watchlist["media"].append(media_name)
                 response = f"Added *{media_name}* to the **{watchlist_name}** watchlist!"
             else:
                 response = f"*{media_name}* is already in the **{watchlist_name}** watchlist!"
-            break
-
-    if not watchlist_exists:
+    else:
         response = f"The **{watchlist_name}** watchlist does not exist! \nYou can create it with `/watchlist_create {watchlist_name}`"
 
     # Write the updated JSON data
-    watchlist_file = open(WATCHLISTFILENAME, 'w')
-    watchlist_file.write(json.dumps(watchlist_data))
-    watchlist_file.close()
+    utils.write_watchlist_file(WATCHLISTFILENAME, watchlist_data)
 
     await interaction.response.send_message(response)
 
@@ -216,7 +194,7 @@ async def watchlist_add(interaction: nextcord.Interaction, media_name, watchlist
 # ---------------------------------------------------------------------------
 
 @bot.slash_command(guild_ids=[GUILD_ID],
-                   name="watchlist_delete_media",
+                   name="remove",
                    description="remove a movie or show from a watchlist",
                    default_member_permissions=EDIT_PERMISSION)
 async def watchlist_delete_media(interaction: nextcord.Interaction, media_name, watchlist_name):
@@ -232,31 +210,23 @@ async def watchlist_delete_media(interaction: nextcord.Interaction, media_name, 
     None
     """
     # Read the JSON data
-    watchlist_file = open(WATCHLISTFILENAME, 'r')
-    watchlist_data = json.load(watchlist_file)
-    watchlist_file.close()
+    watchlist_data = utils.read_watchlist_file(WATCHLISTFILENAME)
 
     # Check if the watchlist exists
-    watchlist_exists = False
-    for watchlist in watchlist_data["watchlists"]:
-        if watchlist["name"] == watchlist_name:
-            watchlist_exists = True
+    watchlist = utils.get_watchlist(watchlist_data, watchlist_name)
+    if(watchlist != None):
             # Check if media exists in watchlist
             if media_name in watchlist["media"]:
                 watchlist["media"].remove(media_name)
                 response = f"Removed *{media_name}* from the **{watchlist_name}** watchlist!"
             else:
                 response = f"*{media_name}* is not in the **{watchlist_name}** watchlist!"
-            break
 
-    if not watchlist_exists:
+    else:
         response = f"The **{watchlist_name}** watchlist does not exist!"
 
     # Write the updated JSON data
-    watchlist_file = open(WATCHLISTFILENAME, 'w')
-    watchlist_file.write(json.dumps(watchlist_data))
-    watchlist_file.close()
-
+    utils.write_watchlist_file(WATCHLISTFILENAME, watchlist_data)
     await interaction.response.send_message(response)
     
     
@@ -265,29 +235,22 @@ async def watchlist_delete_media(interaction: nextcord.Interaction, media_name, 
 # ---------------------------------------------------------------------------
 
 @bot.slash_command(guild_ids=[GUILD_ID],
-                   name="watchlist_choose",
+                   name="choose",
                    description="select a random item from a watchlist")
 async def watchlist_choose(interaction: nextcord.Interaction, watchlist_name):
 
-    watchlist_file = open(WATCHLISTFILENAME, 'r')
-    watchlist_data = json.load(watchlist_file)
-    watchlist_file.close()
+    watchlist_data = utils.read_watchlist_file(WATCHLISTFILENAME)
 
-    watchlist_exists = False
-
-    for watchlist in watchlist_data["watchlists"]:
-        if watchlist["name"] == watchlist_name:
-            watchlist_exists = True
+    watchlist = utils.get_watchlist(watchlist_data, watchlist_name)
+    if(watchlist != None):
             watchlist_length = len(watchlist["media"])
             if watchlist_length == 0:
-                response = f"The **{watchlist_name}** watchlist is empty. \nYou can add items to it using '/watchlist_add <media_name> {watchlist_name}'"
+                response = f"The **{watchlist_name}** watchlist is empty. \nYou can add items to it using '/add <media_name> {watchlist_name}'"
             else:
                 selected_media = random.choice(watchlist["media"])
                 response = f"Let's watch **{selected_media}** \nTime to get out the popcorn!"
-
-
-    if not watchlist_exists:
-        response = f"The **{watchlist_name}** watchlist does not exist! \nYou can create it with `/watchlist_create {watchlist_name}`"
+    else:
+        response = f"The **{watchlist_name}** watchlist does not exist! \nYou can create it with `/create {watchlist_name}`"
 
     await interaction.response.send_message(response)
 
@@ -297,20 +260,16 @@ async def watchlist_choose(interaction: nextcord.Interaction, watchlist_name):
 # ---------------------------------------------------------------------------
 
 @bot.slash_command(guild_ids=[GUILD_ID],
-                   name="watchlist_clear",
+                   name="clear",
                    description="remove all media from a watchlist")
 async def watchlist_clear(interaction: nextcord.Interaction, watchlist_name):
 
     # Read the JSON data
-    watchlist_file = open(WATCHLISTFILENAME, 'r')
-    watchlist_data = json.load(watchlist_file)
-    watchlist_file.close()
+    watchlist_data = utils.read_watchlist_file(WATCHLISTFILENAME)
 
     # Find the watchlist
-    found = False
-    for watchlist in watchlist_data["watchlists"]:
-        if watchlist["name"] == watchlist_name:
-            found = True
+    watchlist = utils.get_watchlist(watchlist_data, watchlist_name)
+    if(watchlist != None):
             if len(watchlist["media"]) == 0:
                 response = f"The **{watchlist_name}** watchlist is already empty."
             else:
@@ -318,12 +277,10 @@ async def watchlist_clear(interaction: nextcord.Interaction, watchlist_name):
                 response = f"Cleared all media from the **{watchlist_name}** watchlist."
 
             # Write the updated JSON data
-            watchlist_file = open(WATCHLISTFILENAME, 'w')
-            watchlist_file.write(json.dumps(watchlist_data))
-            watchlist_file.close()
-            break
+            utils.write_watchlist_file(WATCHLISTFILENAME, watchlist_data)
+            
 
-    if not found:
+    else:
         response = f"Watchlist named {watchlist_name} does not exist."
 
     await interaction.response.send_message(response)
@@ -332,78 +289,60 @@ async def watchlist_clear(interaction: nextcord.Interaction, watchlist_name):
 # Participant Commands - Join, leave, view or notifty watchlist participants
 # ---------------------------------------------------------------------------
 
-@bot.slash_command(guild_ids=[GUILD_ID], name="watchlist_join", description="join an existing watchlist")
+@bot.slash_command(guild_ids=[GUILD_ID], name="join", description="join an existing watchlist")
 async def watchlist_join(interaction: nextcord.Interaction, watchlist_name):
     #read the json to get all watchlist list
-    watchlist_file = open(WATCHLISTFILENAME, 'r')
-    watchlist_data = json.load(watchlist_file)
-    watchlist_file.close()
+    watchlist_data = utils.read_watchlist_file(WATCHLISTFILENAME)
 
     #add participant to watchlist
     user_id = interaction.user.id
-    found = 0
-    for watchlist in watchlist_data["watchlists"]:
-        if watchlist["name"] == watchlist_name:
-            found = 1
+    watchlist = utils.get_watchlist(watchlist_data, watchlist_name)
+    if(watchlist != None):
             #check duplication
             if (user_id in watchlist["participants"]):
                 response = "You are already in this watchlist."
-                break
+                
             else:
                 watchlist["participants"].append(user_id)
                 #write the change to json
-                watchlist_file = open(WATCHLISTFILENAME, 'w')
-                watchlist_file.write(json.dumps(watchlist_data))
-                watchlist_file.close()
+                utils.write_watchlist_file(WATCHLISTFILENAME, watchlist_data)
                 response = f"You have joined the {watchlist_name} watchlist."
-                break
-
-    if not found:
+    else:
         response = f"Watchlist named {watchlist_name} does not exist"
     await interaction.response.send_message(response)
 
-@bot.slash_command(guild_ids=[GUILD_ID], name="watchlist_leave", description="leave from a joined watchlist")
+@bot.slash_command(guild_ids=[GUILD_ID], name="leave", description="leave from a joined watchlist")
 async def watchlist_leave(interaction: nextcord.Interaction, watchlist_name):
     #read the json to get all watchlist list
-    watchlist_file = open(WATCHLISTFILENAME, 'r')
-    watchlist_data = json.load(watchlist_file)
-    watchlist_file.close()
+    watchlist_data = utils.read_watchlist_file(WATCHLISTFILENAME)
 
     # Check if the watchlist exists
     user_id = interaction.user.id
-    found = 0
-    for watchlist in watchlist_data["watchlists"]:
-        if watchlist["name"] == watchlist_name:
-            found = 1
+    watchlist = utils.get_watchlist(watchlist_data, watchlist_name)
+    if(watchlist != None):
             # Check if user id is in the participants list
             if (user_id in watchlist["participants"]):
                 watchlist["participants"].remove(user_id)
                 #write the change to json
-                watchlist_file = open(WATCHLISTFILENAME, 'w')
-                watchlist_file.write(json.dumps(watchlist_data))
-                watchlist_file.close()
+                utils.write_watchlist_file(WATCHLISTFILENAME, watchlist_data)
                 response = f"You have been removed from the {watchlist_name} watchlist."
-                break
+                
             else:
                 response = "You are not currently in this watchlist"
-                break
+            
 
-    if not found:
+    else:
         response = f"Watchlist named {watchlist_name} does not exist"
     await interaction.response.send_message(response)
 
-@bot.slash_command(guild_ids=[GUILD_ID], name="watchlist_participants", description="view a watchlist's participants")
+@bot.slash_command(guild_ids=[GUILD_ID], name="participants", description="view a watchlist's participants")
 async def watchlist_participants(interaction: nextcord.Interaction, watchlist_name):
     #read the json to get all watchlist list
-    watchlist_file = open(WATCHLISTFILENAME, 'r')
-    watchlist_data = json.load(watchlist_file)
-    watchlist_file.close()
+    watchlist_data = utils.read_watchlist_file(WATCHLISTFILENAME)
 
     # Find watchlist
-    found = 0
-    for watchlist in watchlist_data["watchlists"]:
-        if watchlist["name"] == watchlist_name:
-            found = 1
+    watchlist = utils.get_watchlist(watchlist_data, watchlist_name)
+    if(watchlist != None):
             # Print Members
             response = f"Participants of {watchlist_name} watchlist:\n"
             for user_id in watchlist["participants"]:
@@ -412,28 +351,38 @@ async def watchlist_participants(interaction: nextcord.Interaction, watchlist_na
                 response += "- " + user_name + "\n"
             if len(watchlist["participants"]) == 0:
                 response = f"There are no participants in {watchlist_name} yet  :("
-
-    if not found:
-        response = f"Watchlist named {watchlist_name} does not exist"
+    else: response = f"Watchlist named {watchlist_name} does not exist"
     await interaction.response.send_message(response)
 
-@bot.slash_command(guild_ids=[GUILD_ID], name="watchlist_notifyall", description="notify all participants of a watchlist")
+@bot.slash_command(guild_ids=[GUILD_ID], name="poke", description="notify all participants of a watchlist")
 async def watchlist_notifyall(interaction: nextcord.Interaction, watchlist_name):
     #read the json to get all watchlist list
-    watchlist_file = open(WATCHLISTFILENAME, 'r')
-    watchlist_data = json.load(watchlist_file)
-    watchlist_file.close()
-
+    watchlist_data = utils.read_watchlist_file(WATCHLISTFILENAME)
     #add participant to watchlist
-    found = 0
-    for watchlist in watchlist_data["watchlists"]:
-        if watchlist["name"] == watchlist_name:
-            found = 1
+    watchlist = utils.get_watchlist(watchlist_data, watchlist_name)
+    if(watchlist != None):
             mentions = ' '.join(f'<@{user_id}>' for user_id in watchlist["participants"]) #Generate string of mentions in space-separated manner
             response = f'A watch party for the {watchlist_name} watchlist is starting soon! {mentions}'
 
-    if not found:
+    else:
         response = f"Watchlist named {watchlist_name} does not exist"
+    await interaction.response.send_message(response)
+
+@bot.slash_command(guild_ids=[GUILD_ID], name="view", description="view the contents of a wishlist")
+async def watchlist_view(interaction: nextcord.Interaction, watchlist_name):
+    #readl the json to get all watchlist list
+    watchlist_data = utils.read_watchlist_file(WATCHLISTFILENAME)
+    # Find the watchlist
+    watchlist = utils.get_watchlist(watchlist_data, watchlist_name)
+    if(watchlist != None):
+        if len(watchlist["media"]) == 0:
+            response = f"The **{watchlist_name}** watchlist is empty."
+        else:
+            response = f"Here are all of the items in the **{watchlist_name}** watchlist!\n"
+            for media in watchlist["media"]: #Print every media item
+                response += f"- {media}\n"
+    else: response = f"Watchlist named {watchlist_name} does not exist."
+
     await interaction.response.send_message(response)
 
 bot.run(BOT_TOKEN)

@@ -14,7 +14,7 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: 🔊 Upload code coverage to GitHub Artifacts (for SonarCloud)
+      - name: Upload code coverage to GitHub Artifacts (for SonarCloud)
         uses: actions/upload-artifact@v2
         with:
           name: code-coverage

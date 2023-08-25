@@ -14,7 +14,7 @@ Well... At least in theory. We are still working on getting everything set up.
 #### [Contributing](CONTRIBUTING.md)
 
 ## How to use the bot for yourself in its current state:
-TBD
+
 ### 1. Fork and clone this repository to your local machine
 See the [Github Cloning Guide](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository) if unfamiliar. Or download the files manually from Github.
 ### 2. Install Python
@@ -56,6 +56,8 @@ The Guild ID for a server can be found by right-clicking the server's name in th
 
 ![guildTOKEN](https://github.com/mattysteves/discord-watch-party-bot/assets/39393161/6cfcec40-c7be-4363-9614-10b9ad4f3481)
 
+You **must** turn on Developer Mode to see this (Settings > Advanced > Developer Mode)
+
 The Guild ID goes here:
 
 ![envfileGUILD](https://github.com/mattysteves/discord-watch-party-bot/assets/39393161/7301a59e-144a-46b0-8e05-2dbdbe50833a)
@@ -66,4 +68,4 @@ Do not share your bot token with anyone!
 ## How to help improve the bot
 1. Fork, clone, and install the bot by following the guide above.
 ## License and usage
-TBD
+[License](LICENSE)
