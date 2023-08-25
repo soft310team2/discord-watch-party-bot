@@ -378,6 +378,7 @@ async def watchlist_view(interaction: nextcord.Interaction, watchlist_name):
         if len(watchlist["media"]) == 0:
             response = f"The **{watchlist_name}** watchlist is empty."
         else:
+            response = f"Here are all of the items in the **{watchlist_name}** watchlist!\n"
             for media in watchlist["media"]: #Print every media item
                 response += f"- {media}\n"
     else: response = f"Watchlist named {watchlist_name} does not exist."
