@@ -122,9 +122,8 @@ async def watchlist_delete_all(interaction: nextcord.Interaction):
     if len(watchlist_data["watchlists"]) == 0:
         response = "There are no watchlists for me to delete ¯\_(ツ)_/¯"
     else:
-        watchlist_file = open(WATCHLISTFILENAME, 'w')
-        watchlist_file.write(json.dumps({"watchlists": []}))
-        watchlist_file.close()
+        watchlist_data = {"watchlists": []}
+        utils.write_watchlist_file(WATCHLISTFILENAME, watchlist_data)
         response = "Removed all watchlists, use /create to make a new one!"
 
     await interaction.response.send_message(response)
