@@ -8,6 +8,12 @@ Discord watch-party bot is not just great at selecting media based on you and yo
 
 Well... At least in theory. We are still working on getting everything set up.
 
+Release 1 plans to have the basic viewing commands set up. 
+
+Release 2 will work on adding tags and statuses to create collections of media for better filtering
+
+Release 3 will add polling and API connection to get third party searching. 
+
 ## Please See:
 #### [Code of Conduct](CODE_OF_CONDUCT.md)
 #### [License](LICENSE)
