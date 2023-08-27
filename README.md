@@ -1,25 +1,18 @@
-# Discord watch party bot - Popcorn
+# Discord watch party bot - 🍿 Popcorn 🍿
 This is a Discord bot for organising watch-parties, named Popcorn. A University of Auckland SOFTENG 310 Team 2 creation. You're welcome!
 
-## What does the Discord Watch-Party Bot do?
+## What does Popcorn do?
 Add this bot to your Discord server and let it help you select the best movie or TV show to watch with your friends.
 
-Discord watch-party bot is not just great at selecting media based on you and your friends' preferences, it also keeps track of what you've already watched!
+Popcorn is not just great at selecting media based on you and your friends' preferences, it also keeps track of what you've already watched!
 
-Well... At least in theory. We are still working on getting everything set up.
+Well... At least in theory. So far, only release 1 has been implemented.
 
-**Release 1:**
-Bot that can be run by an individual from their machine with a local memory that can be accessed by all server members. 
-Basic adding, deleteing, viewing, notifications, and permissions functionality is implemented.
-Basic user experience to use bot for watchlists in servers fullly implemented.
-
-**Release 2:**
-We will work on adding tags and statuses to individual media for better filtering.
-More thorough user experience will be implemented, with more specific commands.
-
-**Release 3:**
-We will add API connectiosn to get third party searching and media information to show real world info about media items.
-Voting implementation will be implemented, possibly with discord event set up as well.
+| Release | Description |
+| --- | --- |
+| **Release 1** | Bot that can be run by an individual from their machine with a local memory that can be accessed by all server members. Basic adding, deleteing, viewing, notifications, and permissions functionality is implemented. Basic user experience to use bot for watchlists in servers fullly implemented. |
+| **Release 2** | We will work on adding tags and statuses to individual media for better filtering. More thorough user experience will be implemented, with more specific commands. |
+| **Release 3** | We will add API connectiosn to get third party searching and media information to show real world info about media items. Voting implementation will be implemented, possibly with discord event set up as well. |
 
 ## Please See:
 #### [Code of Conduct](CODE_OF_CONDUCT.md)
@@ -76,9 +69,10 @@ The Guild ID goes here:
 ![envfileGUILD](https://github.com/mattysteves/discord-watch-party-bot/assets/39393161/7301a59e-144a-46b0-8e05-2dbdbe50833a)
 
 #### IMPORTANT
-Do not share your bot token with anyone!
+Do not share your bot token with anyone! Make sure to include the local .env file in your .gitignore, so that your bot token is never uploaded to the repository! If you accidentally leak your bot's token, you will have to regenerate the token from the discord developers portal.
 
 ## How to help improve the bot
-1. Fork, clone, and install the bot by following the guide above.
+1. Fork, clone, and install the bot by following the [Contributing](CONTRIBUTING.md) guidelines.
+
 ## License and usage
 [License](LICENSE)
