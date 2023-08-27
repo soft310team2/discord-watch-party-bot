@@ -1,5 +1,5 @@
-# discord-watch-party-bot
-Discord bot for organising watch-parties. A University of Auckland SOFTENG 310 Team 2 creation. You're welcome!
+# Discord watch party bot - Popcorn
+This is a Discord bot for organising watch-parties, named Popcorn. A University of Auckland SOFTENG 310 Team 2 creation. You're welcome!
 
 ## What does the Discord Watch-Party Bot do?
 Add this bot to your Discord server and let it help you select the best movie or TV show to watch with your friends.
