@@ -58,8 +58,8 @@ The bot token goes here:
 
 ![envfileBOT](https://github.com/mattysteves/discord-watch-party-bot/assets/39393161/7725b15e-7f60-4caa-94cf-98b8b22e5407)
 
-*IMPORTANT*
-Do not share your bot token with anyone! Make sure to include the local .env file in your .gitignore, so that your bot token is never uploaded to the repository! If you accidentally leak your bot's token, you will have to regenerate the token from the discord developers portal.
+*IMPORTANT*:
+Do not share your bot token with anyone! Make sure to include the local .env file in your .gitignore, so your bot token is never uploaded to the repository! If you accidentally leak your bot's token, you will have to regenerate the token from the discord developers portal.
 
 The Guild ID for a server can be found by right-clicking the server's name in the top left, and selecting the "Copy Guild ID" option form the dropdown:
 
