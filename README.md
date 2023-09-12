@@ -43,6 +43,9 @@ Give the bot the following Scopes:
 And the following Permissions:
 ![bot permissions](https://github.com/mattysteves/discord-watch-party-bot/assets/39393161/b84481a3-8be4-4d19-a8ed-2e79128e3352)
 
+Make sure Message Content Intent is toggled on (above bot permissions):
+![image](https://github.com/soft310team2/discord-watch-party-bot/assets/100410646/91230df6-c1cc-424f-ba7d-2ac27378cd37)
+
 Then copy the generated URL, paste it into your browser, and you will be prompted to add the bot to one of your servers. Once the bot is invited, it will not be able to perform any functions until bot.py is configured for your bot's token and your server's guild ID. bot.py will also need to be running with an internet connection for any commands to work.
 
 #### Adding Your Bot Token and Guild ID to the project:
