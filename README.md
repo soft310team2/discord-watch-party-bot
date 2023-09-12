@@ -58,6 +58,9 @@ The bot token goes here:
 
 ![envfileBOT](https://github.com/mattysteves/discord-watch-party-bot/assets/39393161/7725b15e-7f60-4caa-94cf-98b8b22e5407)
 
+##### IMPORTANT
+Do not share your bot token with anyone! Make sure to include the local .env file in your .gitignore, so that your bot token is never uploaded to the repository! If you accidentally leak your bot's token, you will have to regenerate the token from the discord developers portal.
+
 The Guild ID for a server can be found by right-clicking the server's name in the top left, and selecting the "Copy Guild ID" option form the dropdown:
 
 ![guildTOKEN](https://github.com/mattysteves/discord-watch-party-bot/assets/39393161/6cfcec40-c7be-4363-9614-10b9ad4f3481)
@@ -74,14 +77,11 @@ Use the '/' prefix to issue bot commands in your server's text channels:
 
 ![image](https://github.com/soft310team2/discord-watch-party-bot/assets/100410646/02d1203e-a723-4a80-87a8-02f46c261b77)
 
-If you type "/popcorn", you can see a popup list of all of the commands. You can also use the /help command for the same list.
+If you type "/popcorn", you should see a popup list of all of the commands. You can also use the /help command for the same list.
 
 ![image](https://github.com/soft310team2/discord-watch-party-bot/assets/100410646/e9fa32f7-edf8-4aeb-9432-3db4ac249bee)
 
 Your bot is now working, hooray!
-
-#### IMPORTANT
-Do not share your bot token with anyone! Make sure to include the local .env file in your .gitignore, so that your bot token is never uploaded to the repository! If you accidentally leak your bot's token, you will have to regenerate the token from the discord developers portal.
 
 ## How to help improve the bot
 1. Fork, clone, and install the bot by following the [Contributing](CONTRIBUTING.md) guidelines.
