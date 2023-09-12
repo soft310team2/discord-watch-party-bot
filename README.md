@@ -78,4 +78,4 @@ Do not share your bot token with anyone! Make sure to include the local .env fil
 [License](LICENSE)
 
 ## Contacts
-For additional information about the bot, contact via this email: jwei578@aucklanduni.ac.nz
+For additional information about the bot, contact email jwei578@aucklanduni.ac.nz
