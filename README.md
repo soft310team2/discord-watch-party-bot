@@ -71,8 +71,11 @@ The Guild ID goes here:
 #### Run bot.py
 If everything is configured properly, run bot.py and you should see your bot go online in your server (where you obtained the guild ID).
 Use the '/' prefix to issue bot commands in your server's text channels:
+
 ![image](https://github.com/soft310team2/discord-watch-party-bot/assets/100410646/02d1203e-a723-4a80-87a8-02f46c261b77)
-If you type "/popcorn", you can see a popup list of all of the commands. You can also use the /help command.
+
+If you type "/popcorn", you can see a popup list of all of the commands. You can also use the /help command for the same list.
+
 ![image](https://github.com/soft310team2/discord-watch-party-bot/assets/100410646/e9fa32f7-edf8-4aeb-9432-3db4ac249bee)
 
 Your bot is now working, hooray!
