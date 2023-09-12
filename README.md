@@ -33,7 +33,7 @@ In the root folder of the project - the one with your .venv folder in it - use t
 #### Use The Existing Bot (not currently recommended):
 Use the existing Bot: You can invite the existing bot to your Discord server via this link: [Invite Popcorn Bot](https://discord.com/api/oauth2/authorize?client_id=1138633131432366194&permissions=18685255740480&scope=bot%20applications.commands). The bot will need to be invited by a member of the server with admin priviledges. NOTE: The bot currently has access to message content for debugging purposes.
 
-Using this method, you will only be able to use the bot when it is being run for testing at this stage of development, and not all features may work correctly. To use the bot anytime with complete freedom you can create your own personal version through the discord developer portal outlined in Option B below.
+Using this method, you will only be able to use the bot when it is being run for testing at this stage of development, and not all features may work correctly. To use the bot anytime with complete freedom you can create your own personal version through the discord developer portal outlined below.
 #### Create Your Own Bot:
 Create your own bot from the [Discord Developer's Portal](https://discord.com/developers/docs/intro). Follow this [Creating a Discord Bot Guide](https://www.ionos.com/digitalguide/server/know-how/creating-discord-bot/).
 
