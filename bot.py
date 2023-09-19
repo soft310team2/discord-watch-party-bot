@@ -64,6 +64,7 @@ async def help(interaction: nextcord.Interaction):
     response += "/poke \n- notify all participants of a watchlist\n\n"
     response += "/choose \n- select a random item from a watchlist\n\n"
     response += "/status \n- update watch status of a movie or show in a watchlist\n\n"
+    response += "/history \n- display all the watched movies in a watchlist\n\n"
     await interaction.response.send_message(response)
 
 
