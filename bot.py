@@ -3,9 +3,7 @@ from dotenv import load_dotenv
 import nextcord
 from nextcord.ext import commands
 import random
-import json
 import utils
-
 
 load_dotenv()
 BOT_TOKEN = os.getenv('DISCORD_TOKEN')
@@ -60,6 +58,7 @@ async def help(interaction: nextcord.Interaction):
     response += "/participants \n- view a watchlist's participants\n\n"
     response += "/poke \n- notify all participants of a watchlist\n\n"
     response += "/choose \n- select a random item from a watchlist\n\n"
+    response += "/status \n- update watch status of a movie or show in a watchlist\n\n"
     await interaction.response.send_message(response)
 
 
@@ -106,7 +105,7 @@ async def watchlist_create(interaction: nextcord.Interaction, watchlist_name):
         response = f"A watchlist named {watchlist_name} already exists!"
     else:
         # write in the new watchlist to the json
-        watchlist_data["watchlists"].append({'name': watchlist_name, 'media': [], 'participants': []})
+        watchlist_data["watchlists"].append({'name': watchlist_name, 'media': {}, 'participants': []})
         utils.write_watchlist_file(WATCHLISTFILENAME, watchlist_data)
         response = f"Created a new watchlist named {watchlist_name}. Add movies and shows to your new watchlist!"
 
@@ -173,14 +172,15 @@ async def watchlist_add(interaction: nextcord.Interaction, media_name, watchlist
     # Check if the watchlist exists
     watchlist = utils.get_watchlist(watchlist_data, watchlist_name)
     if(watchlist != None):
-            # Check if media already exists in watchlist
-            if media_name not in watchlist["media"]:
-                watchlist["media"].append(media_name)
-                response = f"Added *{media_name}* to the **{watchlist_name}** watchlist!"
-            else:
-                response = f"*{media_name}* is already in the **{watchlist_name}** watchlist!"
+        # Check if media already exists in watchlist
+        if media_name not in watchlist["media"]:
+            # Sets media to default unwatched and makes it a dictionary so easier access
+            watchlist["media"][media_name] = {"status" : "unwatched"}
+            response = f"Added *{media_name}* to the **{watchlist_name}** watchlist!"
+        else:
+            response = f"*{media_name}* is already in the **{watchlist_name}** watchlist!"
     else:
-        response = f"The **{watchlist_name}** watchlist does not exist! \nYou can create it with `/watchlist_create {watchlist_name}`"
+        response = f"The **{watchlist_name}** watchlist does not exist! \nYou can create it with `/create {watchlist_name}`"
 
     # Write the updated JSON data
     utils.write_watchlist_file(WATCHLISTFILENAME, watchlist_data)
@@ -216,7 +216,7 @@ async def watchlist_delete_media(interaction: nextcord.Interaction, media_name, 
     if(watchlist != None):
             # Check if media exists in watchlist
             if media_name in watchlist["media"]:
-                watchlist["media"].remove(media_name)
+                watchlist["media"].pop(media_name)
                 response = f"Removed *{media_name}* from the **{watchlist_name}** watchlist!"
             else:
                 response = f"*{media_name}* is not in the **{watchlist_name}** watchlist!"
@@ -246,7 +246,7 @@ async def watchlist_choose(interaction: nextcord.Interaction, watchlist_name):
             if watchlist_length == 0:
                 response = f"The **{watchlist_name}** watchlist is empty. \nYou can add items to it using '/add <media_name> {watchlist_name}'"
             else:
-                selected_media = random.choice(watchlist["media"])
+                selected_media = random.choice(list(watchlist["media"].keys()))
                 response = f"Let's watch **{selected_media}** \nTime to get out the popcorn!"
     else:
         response = f"The **{watchlist_name}** watchlist does not exist! \nYou can create it with `/create {watchlist_name}`"
@@ -272,7 +272,7 @@ async def watchlist_clear(interaction: nextcord.Interaction, watchlist_name):
             if len(watchlist["media"]) == 0:
                 response = f"The **{watchlist_name}** watchlist is already empty."
             else:
-                watchlist["media"] = []  # Clear the media list
+                watchlist["media"] = {}  # Clear the media dictionary
                 response = f"Cleared all media from the **{watchlist_name}** watchlist."
 
             # Write the updated JSON data
@@ -283,6 +283,57 @@ async def watchlist_clear(interaction: nextcord.Interaction, watchlist_name):
         response = f"Watchlist named {watchlist_name} does not exist."
 
     await interaction.response.send_message(response)
+
+
+# ---------------------------------------------------------------------------
+# Media Commands - Update watch status of specified media to watchlist
+# ---------------------------------------------------------------------------
+
+@bot.slash_command(guild_ids=[GUILD_ID], name="status", description="update watch status of a movie or show in a watchlist")
+async def watchlist_update_status(interaction: nextcord.Interaction, watch_status, media_name, watchlist_name):
+    """
+    Updates the watch status of specified a movie or show in a watchlist.
+
+    Parameters:
+    interaction (nextcord.Interaction): The interaction object representing the command invocation.
+    watch_status (str): The watch status - unwatched, in progress or watched
+    media_name (str): The name of the movie or show to update watch status of.
+    watchlist_name (str): The name of the watchlist to which the movie or show to update watch status of
+
+    Returns:
+    None
+    """
+    # TODO: Provide user with 3 options menu instead
+    watch_status = watch_status.strip().lower()
+    valid_statuses = ["unwatched", "in progress", "watched"]
+    
+    # Checks if valid status input
+    if watch_status in valid_statuses:
+        
+        # Read the JSON data
+        watchlist_data = utils.read_watchlist_file(WATCHLISTFILENAME)
+
+        # Check if the watchlist exists
+        watchlist = utils.get_watchlist(watchlist_data, watchlist_name)
+        if(watchlist != None):
+            # Check if media already exists in watchlist
+            if media_name in watchlist["media"]:
+                media = watchlist["media"].get(media_name)
+                media["status"] = watch_status
+                response = f"Updated watch status of *{media_name}* to **{watch_status}** in the **{watchlist_name}** watchlist!"
+            else:
+                response = f"*{media_name}* is not in the **{watchlist_name}** watchlist! \nYou can add it with `/add {media_name}`"
+        else:
+            response = f"The **{watchlist_name}** watchlist does not exist! \nYou can create it with `/create {watchlist_name}`"
+
+        # Write the updated JSON data
+        utils.write_watchlist_file(WATCHLISTFILENAME, watchlist_data)
+
+        await interaction.response.send_message(response)
+    
+    else:
+        await interaction.response.send_message("Invalid watch status. Please choose from: unwatched, in progress, watched")
+
 
 # ---------------------------------------------------------------------------
 # Participant Commands - Join, leave, view or notifty watchlist participants
