@@ -4,6 +4,7 @@ import nextcord
 from nextcord.ext import commands
 import random
 import utils
+import re
 
 load_dotenv()
 BOT_TOKEN = os.getenv('DISCORD_TOKEN')
@@ -186,7 +187,7 @@ async def watchlist_add(interaction: nextcord.Interaction, media_name, watchlist
         # Check if media already exists in watchlist
         if media_name not in watchlist["media"]:
             # Sets media to default unwatched and makes it a dictionary so easier access
-            watchlist["media"][media_name] = {"status": "unwatched"}
+            watchlist["media"][media_name] = {"status": "unwatched", "tags": []}
             response = f"Added *{media_name}* to the **{watchlist_name}** watchlist!"
         else:
             response = f"*{media_name}* is already in the **{watchlist_name}** watchlist!"
@@ -291,6 +292,59 @@ async def watchlist_clear(interaction: nextcord.Interaction, watchlist_name):
     else:
         response = f"Watchlist named {watchlist_name} does not exist."
 
+    await interaction.response.send_message(response)
+
+# ---------------------------------------------------------------------------
+# Media Commands - Add tags to a specified media in a watchlist
+# ---------------------------------------------------------------------------
+@bot.slash_command(guild_ids=[GUILD_ID], name="add_tags", description="Add tags to a media in watchlist", default_member_permissions=EDIT_PERMISSION)
+async def add_tags(interaction: nextcord.Interaction, watchlist_name, media_name, tags):
+    """
+    Allows users to add tags to media items in a watchlist
+    Args:
+        interaction (nextcord.Interaction): The interaction object representing the command invocation.
+        watchlist_name str: The name of a watchlist in which the media item the user wants to add tags to is in
+        media_name str: The name of the media item  (Movie/Show/Animation) the user wants to add tags to
+        tags str: The tags the user wants to add to the media item in some watchlist
+
+    Returns:
+    None
+
+    """
+
+    # These are the tags from which the user can choose from
+    VALID_TAGS = ["movie", "show", "animation", "documentary", "horror", "thriller", "sci-fi", "fantasy", "mystery", "comedy", "action", "adventure"]
+
+    # Read in JSON data
+    watchlist_data = utils.read_watchlist_file(WATCHLISTFILENAME)
+    watchlist = utils.get_watchlist(watchlist_data, watchlist_name)
+
+    if watchlist:
+        if media_name in watchlist["media"]:
+            # Obtain the media item and parse the tags the user has specified
+            media = watchlist["media"].get(media_name)
+            new_tags = [tag.strip().lower() for tag in re.split(r'[ ,]+', tags)]
+            # Check which tags are valid/invalid from the ones provided by the user
+            valid_tags = [tag for tag in new_tags if tag in VALID_TAGS]
+            invalid_tags = [tag for tag in new_tags if tag not in VALID_TAGS]
+
+            # If there are valid tags from the parsed tags, add them to the current tags and ensure there are no duplicate tags
+            if valid_tags:
+                media["tags"].extend(valid_tags)
+                media["tags"] = list(set(media["tags"]))
+
+            # If there are any invalid tags, then inform the user and list the valid tags they can instead choose from
+            if invalid_tags:
+                response = f"Failed to add the following tags to *{media_name}* : **{', '.join(invalid_tags)}**. \n\nPlease select tags from the following: \n**{', '.join(VALID_TAGS)}**"
+            else:
+                response = f"Succesfully added all tags to *{media_name}*"
+
+        else:
+            response = f"*{media_name}* not found in **{watchlist_name}**!"
+    else:
+        response = f"The **{watchlist_name}** watchlist does not exist!"
+
+    utils.write_watchlist_file(WATCHLISTFILENAME, watchlist_data)
     await interaction.response.send_message(response)
 
 
