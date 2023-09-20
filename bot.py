@@ -87,6 +87,9 @@ async def watchlist_see_all(interaction: nextcord.Interaction):
                 response += "- There are no items in this watchlist right now\n"
             else:
                 for media in watchlist["media"]:  # Print every media item
+                    media_status = watchlist["media"].get(media)
+                    if media_status["status"] == "watched":
+                        continue
                     response += f"- {media}\n"
             response += "\n\n"
 
@@ -435,7 +438,17 @@ async def watchlist_notifyall(interaction: nextcord.Interaction, watchlist_name)
 
 @bot.slash_command(guild_ids=[GUILD_ID], name="view", description="view the contents of a wishlist")
 async def watchlist_view(interaction: nextcord.Interaction, watchlist_name):
-    # readl the json to get all watchlist list
+    """
+    Displays all the movies that have not been watched in a watchlist.
+
+    Parameters:
+    interaction (nextcord.Interaction): The interaction object representing the command invocation.
+    watchlist_name (str): The name of the watchlist to which the watched movies going to be displayed
+
+    Returns:
+    None
+    """
+    # read the json to get all watchlist list
     watchlist_data = utils.read_watchlist_file(WATCHLISTFILENAME)
     # Find the watchlist
     watchlist = utils.get_watchlist(watchlist_data, watchlist_name)
@@ -445,6 +458,9 @@ async def watchlist_view(interaction: nextcord.Interaction, watchlist_name):
         else:
             response = f"Here are all of the items in the **{watchlist_name}** watchlist!\n"
             for media in watchlist["media"]:  # Print every media item
+                media_status = watchlist["media"].get(media)
+                if media_status["status"] == "watched":
+                    continue
                 response += f"- {media}\n"
     else:
         response = f"Watchlist named {watchlist_name} does not exist."
