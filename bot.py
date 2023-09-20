@@ -5,6 +5,8 @@ from nextcord.ext import commands
 import random
 import json
 import utils
+# importing the other python files
+from commands import misc, media, watchlist, participant
 
 
 load_dotenv()
@@ -23,43 +25,24 @@ EDIT_PERMISSION = 1024
 async def on_ready():
     print(f'Logged in as {bot.user}')
 
+# Located in the misc.py in commands folder
 @bot.slash_command(guild_ids=[GUILD_ID], name="ping", description="pongs the user")
 async def ping(interaction: nextcord.Interaction):
-    await interaction.response.send_message("Pong!")
-
-@bot.slash_command(guild_ids=[GUILD_ID], name="popcorn", description="scoop some popcorn!")
-async def popcorn(interaction: nextcord.Interaction):
-    popcorn = random.randint(1, 100)
-    kernels = random.randint(0, popcorn)
-    response = f"{interaction.user.display_name} scooped {popcorn} bits of popcorn, "
-    if kernels == 0:
-        response += "and no kernels! :popcorn:"
-        if popcorn == 100:
-            response += " NOW THAT'S A BUTTERY BUCKET :butter:"
-    elif kernels == popcorn:
-        response += "but ALL OF THEM ARE JUST KERNELS :skull:"
-    else:
-        response += f"but {kernels} of them are just kernels!"
+    response = misc.ping()
     await interaction.response.send_message(response)
 
+# Located in the misc.py in commands folder
+@bot.slash_command(guild_ids=[GUILD_ID], name="popcorn", description="scoop some popcorn!")
+async def popcorn(interaction: nextcord.Interaction):
+    response = misc.popcorn(interaction)
+    await interaction.response.send_message(response)
+
+# Located in the misc.py in commands folder
 # Help Command
 
 @bot.slash_command(guild_ids=[GUILD_ID], name="help", description="lists all commands and descriptions")
 async def help(interaction: nextcord.Interaction):
-    response = "Here are all of my commands:\n\n"
-    response += "/create \n- create a new watchlist\n\n"
-    response += "/delete \n- delete an existing watchlist\n\n"
-    response += "/deleteall \n- delete all existing watchlists\n\n"
-    response += "/seeall \n- see all watchlists\n\n"
-    response += "/add \n- add a movie or show to a watchlist\n\n"
-    response += "/remove \n- remove a movie or show from a watchlist\n\n"
-    response += "/clear \n- remove all media from a watchlist\n\n"
-    response += "/view \n- view the contents of a wishlist\n\n"
-    response += "/join \n- join an existing watchlist\n\n"
-    response += "/leave \n- leave from a joined watchlist\n\n"
-    response += "/participants \n- view a watchlist's participants\n\n"
-    response += "/poke \n- notify all participants of a watchlist\n\n"
-    response += "/choose \n- select a random item from a watchlist\n\n"
+    response = misc.help()
     await interaction.response.send_message(response)
 
 
