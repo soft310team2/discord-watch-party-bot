@@ -549,6 +549,7 @@ Args:
     tags: The tags that want to be based on to filter
 
 Returns:
+None
 
 """
 @bot.slash_command(guild_ids=[GUILD_ID], name="filter_tags", description="view filtered medias based on tags in a watchlist")
