@@ -1,9 +1,15 @@
 import nextcord
 import utils
 
-#Commands that have to do with users joining the watchlist
+# Commands that have to do with users joining the watchlist
+# Join - Join a watchlist
+# Leave - Leave a watchlist
+# Participants - See who is in a watchlist
+# Poke - Notify users in a watchlist
 
 WATCHLISTFILENAME = "watchlist.json"
+
+# User joins the watchlist
 def watchlist_join(interaction: nextcord.Interaction, watchlist_name):
 	# read the json to get all watchlist list
 	watchlist_data = utils.read_watchlist_file(WATCHLISTFILENAME)
@@ -24,6 +30,8 @@ def watchlist_join(interaction: nextcord.Interaction, watchlist_name):
 	else:
 		response = f"Watchlist named {watchlist_name} does not exist"
 	return response
+
+# User leaves the watchlist
 def watchlist_leave(interaction: nextcord.Interaction, watchlist_name):
 	# read the json to get all watchlist list
 	watchlist_data = utils.read_watchlist_file(WATCHLISTFILENAME)
@@ -45,6 +53,7 @@ def watchlist_leave(interaction: nextcord.Interaction, watchlist_name):
 		response = f"Watchlist named {watchlist_name} does not exist"
 	return response
 
+# See which users have joined the watchlist
 async def watchlist_particpants(bot, watchlist_name):
 	# read the json to get all watchlist list
 	watchlist_data = utils.read_watchlist_file(WATCHLISTFILENAME)
@@ -64,6 +73,7 @@ async def watchlist_particpants(bot, watchlist_name):
 		response = f"Watchlist named {watchlist_name} does not exist"
 	return response
 
+# sends a ping to everyone who has joined the watchlist
 def watchlist_notifyall(watchlist_name):
 	# read the json to get all watchlist list
 	watchlist_data = utils.read_watchlist_file(WATCHLISTFILENAME)

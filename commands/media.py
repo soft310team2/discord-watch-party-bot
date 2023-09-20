@@ -41,6 +41,7 @@ def watchlist_add(media_name, watchlist_name):
 
 	return response
 
+#Delete media from watchlist
 def watchlist_delete_media(media_name, watchlist_name):
 	"""
 	    Removes a movie or show from a specified watchlist.
@@ -73,6 +74,7 @@ def watchlist_delete_media(media_name, watchlist_name):
 	utils.write_watchlist_file(WATCHLISTFILENAME, watchlist_data)
 	return response
 
+#Choose a media to watch at random from a watchlist
 def watchlist_choose(watchlist_name):
 	watchlist_data = utils.read_watchlist_file(WATCHLISTFILENAME)
 
@@ -88,6 +90,7 @@ def watchlist_choose(watchlist_name):
 		response = f"The **{watchlist_name}** watchlist does not exist! \nYou can create it with `/create {watchlist_name}`"
 	return response
 
+#Clear all media from a watchlist
 def watchlist_clear(watchlist_name):
 	# Read the JSON data
 	watchlist_data = utils.read_watchlist_file(WATCHLISTFILENAME)

@@ -146,22 +146,25 @@ async def watchlist_clear(interaction: nextcord.Interaction, watchlist_name):
 # ---------------------------------------------------------------------------
 # Participant Commands - Join, leave, view or notify watchlist participants
 # ---------------------------------------------------------------------------
-
+# Functionality located in the participant.py in commands folder
 @bot.slash_command(guild_ids=[GUILD_ID], name="join", description="join an existing watchlist")
 async def watchlist_join(interaction: nextcord.Interaction, watchlist_name):
     response = participant.watchlist_join(interaction, watchlist_name)
     await interaction.response.send_message(response)
 
+# Functionality located in the participant.py in commands folder
 @bot.slash_command(guild_ids=[GUILD_ID], name="leave", description="leave from a joined watchlist")
 async def watchlist_leave(interaction: nextcord.Interaction, watchlist_name):
     response = participant.watchlist_leave(interaction, watchlist_name)
     await interaction.response.send_message(response)
 
+# Functionality located in the participant.py in commands folder
 @bot.slash_command(guild_ids=[GUILD_ID], name="participants", description="view a watchlist's participants")
 async def watchlist_participants(interaction: nextcord.Interaction, watchlist_name):
     response = await participant.watchlist_particpants(bot, watchlist_name)
     await interaction.response.send_message(response)
 
+# Functionality located in the participant.py in commands folder
 @bot.slash_command(guild_ids=[GUILD_ID], name="poke", description="notify all participants of a watchlist")
 async def watchlist_notifyall(interaction: nextcord.Interaction, watchlist_name):
     response = participant.watchlist_notifyall(watchlist_name)
