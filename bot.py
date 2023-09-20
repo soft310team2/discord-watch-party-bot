@@ -350,6 +350,58 @@ async def add_tags(interaction: nextcord.Interaction, watchlist_name, media_name
     await interaction.response.send_message(response)
 
 
+@bot.slash_command(guild_ids=[GUILD_ID], name="delete_tags", description="Remove tags from a media in watchlist", default_member_permissions=EDIT_PERMISSION)
+async def delete_tags(interaction: nextcord.Interaction, watchlist_name, media_name, tags):
+    """
+    Allows users to delete tags from certain media items in some watchlist
+    Args:
+        interaction (nextcord.Interaction): The interaction object representing the command invocation.
+        watchlist_name: The name of the watchlist from which the user would like to delete tag(s)
+        media_name: The name of the media item in some watchlist from which the user would like to delete tag(s) from
+        tags: The existing tags in some media item in a watchlist
+
+    Returns:
+    None
+
+    """
+    # Read in the JSON data
+    watchlist_data = utils.read_watchlist_file(WATCHLISTFILENAME)
+    watchlist = utils.get_watchlist(watchlist_data, watchlist_name)
+
+    if watchlist:
+        # Ensure the media name is valid
+        if media_name in watchlist["media"]:
+            media = watchlist["media"].get(media_name)
+            # Note that this uses regex to split the input tags based on ',' or simply a blank space to allow flexability in input
+            deletion_tags = [tag.strip().lower() for tag in re.split(r'[ ,]+', tags)]
+
+            # The new tags for the specified media item after removing the ones the user wants to delete
+            new_tags = [tag for tag in media["tags"] if tag not in deletion_tags]
+            # We should also find the invalid tags from the input to inform the user
+            invalid_tags = [tag for tag in deletion_tags if tag not in media["tags"]]
+            media["tags"] = list(set(new_tags))
+
+            if invalid_tags:
+                response = f"The following tags are either invalid tags, or already do not exist in *{media_name}*, hence could not be removed: **{', '.join(invalid_tags)}**. *{media_name}* currently has the followng tags: \n"
+                response += "\n".join([f"- {name}" for name in media["tags"]])
+
+            else:
+                # Inform the user on the status of the tags for the specified media item
+                if len(media["tags"]) > 0:
+                    response = f"Tags successfully removed from *{media_name}*, *{media_name}* currently has the following tags:\n"
+                    response += "\n".join([f"- {name}" for name in media["tags"]])
+                else:
+                    response = f"Tags successfully removed from *{media_name}*, *{media_name}* has no more tags, you can add some with **/add_tags**"
+        else:
+            response = f"*{media_name}* could not be found in the **{watchlist_name}** watchlist"
+
+    else:
+        response = f"The **{watchlist_name}** watchlist does not exist!"
+
+    utils.write_watchlist_file(WATCHLISTFILENAME, watchlist_data)
+    await interaction.response.send_message(response)
+
+
 # ---------------------------------------------------------------------------
 # Media Commands - Update watch status of specified media to watchlist
 # ---------------------------------------------------------------------------
