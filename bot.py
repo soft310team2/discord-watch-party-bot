@@ -332,7 +332,7 @@ async def add_tags(interaction: nextcord.Interaction, watchlist_name, media_name
 
             # If there are any invalid tags, then inform the user and list the valid tags they can instead choose from
             if invalid_tags:
-                response = f"Failed some tags to *{media_name}*: **{', '.join(invalid_tags)}** | Please select tags from the following: \n \n **{', '.join(VALID_TAGS)}**"
+                response = f"Failed to add the following tags to *{media_name}* : **{', '.join(invalid_tags)}**. \n\nPlease select tags from the following: \n**{', '.join(VALID_TAGS)}**"
             else:
                 response = f"Succesfully added all tags to *{media_name}*"
 
