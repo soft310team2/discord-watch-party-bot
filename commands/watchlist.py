@@ -2,10 +2,11 @@ import utils
 
 # Contains all the commands that are used for managing watchlist
 # Contains the following commands:
-# Create - create a watchlist
-# See all - see all watchlist
+# Create - Create a watchlist
+# See all - See all watchlist
 # Delete - Delete a watchlist
 # Delete All - Delete all watchlist
+# View - View contents of a watchlist
 
 WATCHLISTFILENAME = "watchlist.json"
 
@@ -74,4 +75,19 @@ def delete_all():
 		watchlist_data = {"watchlists": []}
 		utils.write_watchlist_file(WATCHLISTFILENAME, watchlist_data)
 		response = "Removed all watchlists, use /create to make a new one!"
+	return response
+def view(watchlist_name):
+	# read the json to get all watchlist list
+	watchlist_data = utils.read_watchlist_file(WATCHLISTFILENAME)
+	# Find the watchlist
+	watchlist = utils.get_watchlist(watchlist_data, watchlist_name)
+	if (watchlist != None):
+		if len(watchlist["media"]) == 0:
+			response = f"The **{watchlist_name}** watchlist is empty."
+		else:
+			response = f"Here are all of the items in the **{watchlist_name}** watchlist!\n"
+			for media in watchlist["media"]:  # Print every media item
+				response += f"- {media}\n"
+	else:
+		response = f"Watchlist named {watchlist_name} does not exist."
 	return response
