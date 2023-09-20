@@ -50,83 +50,38 @@ async def help(interaction: nextcord.Interaction):
 # Watchlist Commands - Create, delete and see watchlists
 # ---------------------------------------------------------------------------
 
+# Located in the watchlist,py in commands folder
 @bot.slash_command(guild_ids=[GUILD_ID], name="seeall", description="see all watchlists")
 async def watchlist_see_all(interaction: nextcord.Interaction):
 
-    watchlist_data = utils.read_watchlist_file(WATCHLISTFILENAME)
-
-    if len(watchlist_data["watchlists"]) == 0: #Respond if there are no watchlists
-        response = "You have no watchlists right now, create a watchlist with /create and you will see it here!"
-    else:
-        response = "Here are all of your watchlists!\n\n"
-        for watchlist in watchlist_data["watchlists"]: #Print every watchlist
-            name = watchlist["name"]
-            response += f"{name}\n"
-            if len(watchlist["media"]) == 0: #Respond if watchlist has no media
-                response += "- There are no items in this watchlist right now\n"
-            else:
-                for media in watchlist["media"]: #Print every media item
-                    response += f"- {media}\n"
-            response += "\n\n"
-
+    response = watchlist.see_all()
     await interaction.response.send_message(response)
 
+# Located in the watchlist,py in commands folder
 @bot.slash_command(guild_ids=[GUILD_ID], name="create", 
                    description="create a new watchlist",
                    default_member_permissions=EDIT_PERMISSION)
 async def watchlist_create(interaction: nextcord.Interaction, watchlist_name):
     #read the json to get all watchlist lists
-    watchlist_data = utils.read_watchlist_file(WATCHLISTFILENAME)
-
-    # Check if the watchlist exists already
-    watchlist_exists = False
-    for watchlist in watchlist_data["watchlists"]:
-        if watchlist["name"] == watchlist_name:
-            watchlist_exists = True
-
-    # Only create the watchlist if it does not already exist
-    if watchlist_exists:
-        response = f"A watchlist named {watchlist_name} already exists!"
-    else:
-        # write in the new watchlist to the json
-        watchlist_data["watchlists"].append({'name': watchlist_name, 'media': [], 'participants': []})
-        utils.write_watchlist_file(WATCHLISTFILENAME, watchlist_data)
-        response = f"Created a new watchlist named {watchlist_name}. Add movies and shows to your new watchlist!"
-
+    response = watchlist.create(watchlist_name)
     await interaction.response.send_message(response)
 
+# Located in the watchlist,py in commands folder
 @bot.slash_command(guild_ids=[GUILD_ID], 
                    name="deleteall", 
                    description="delete all existing watchlists", 
                    default_member_permissions=EDIT_PERMISSION)
 async def watchlist_delete_all(interaction: nextcord.Interaction):
-    #read the json to get all watchlist list
-    watchlist_data = utils.read_watchlist_file(WATCHLISTFILENAME)
-    if len(watchlist_data["watchlists"]) == 0:
-        response = "There are no watchlists for me to delete ¯\_(ツ)_/¯"
-    else:
-        watchlist_data = {"watchlists": []}
-        utils.write_watchlist_file(WATCHLISTFILENAME, watchlist_data)
-        response = "Removed all watchlists, use /create to make a new one!"
-
+    response = watchlist.delete_all()
     await interaction.response.send_message(response)
 
+# Located in the watchlist,py in commands folder
 @bot.slash_command(guild_ids=[GUILD_ID], name="delete", 
                    description="delete an existing watchlist",
                    default_member_permissions=EDIT_PERMISSION)
 async def watchlist_delete(interaction: nextcord.Interaction, watchlist_name):
-    #read the json to get all watchlist list
-    watchlist_data = utils.read_watchlist_file(WATCHLISTFILENAME)
 
-    # Find watchlist
-    watchlist = utils.get_watchlist(watchlist_data, watchlist_name)
-    if(watchlist != None):
-            watchlist_data["watchlists"].remove(watchlist)
-            utils.write_watchlist_file(WATCHLISTFILENAME, watchlist_data)
-            response = f"Removed watchlist named {watchlist_name}."
-
-    else:
-        response = f"Watchlist named {watchlist_name} does not exist"
+    response = watchlist.delete(watchlist_name)
     await interaction.response.send_message(response)
 
 
