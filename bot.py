@@ -291,7 +291,9 @@ async def watchlist_clear(interaction: nextcord.Interaction, watchlist_name):
 
     await interaction.response.send_message(response)
 
-
+# ---------------------------------------------------------------------------
+# Media Commands - Add tags to a specified media in a watchlist
+# ---------------------------------------------------------------------------
 @bot.slash_command(guild_ids=[GUILD_ID], name="add_tags", description="Add tags to a media in watchlist", default_member_permissions=EDIT_PERMISSION)
 async def add_tags(interaction: nextcord.Interaction, watchlist_name, media_name, tags):
     """
