@@ -29,12 +29,13 @@ def watchlist_add(media_name, watchlist_name):
 	if (watchlist != None):
 		# Check if media already exists in watchlist
 		if media_name not in watchlist["media"]:
-			watchlist["media"].append(media_name)
+			# Sets media to default unwatched and makes it a dictionary so easier access
+			watchlist["media"][media_name] = {"status": "unwatched", "tags": []}
 			response = f"Added *{media_name}* to the **{watchlist_name}** watchlist!"
 		else:
 			response = f"*{media_name}* is already in the **{watchlist_name}** watchlist!"
 	else:
-		response = f"The **{watchlist_name}** watchlist does not exist! \nYou can create it with `/watchlist_create {watchlist_name}`"
+		response = f"The **{watchlist_name}** watchlist does not exist! \nYou can create it with `/create {watchlist_name}`"
 
 	# Write the updated JSON data
 	utils.write_watchlist_file(WATCHLISTFILENAME, watchlist_data)
@@ -62,7 +63,7 @@ def watchlist_delete_media(media_name, watchlist_name):
 	if (watchlist != None):
 		# Check if media exists in watchlist
 		if media_name in watchlist["media"]:
-			watchlist["media"].remove(media_name)
+			watchlist["media"].pop(media_name)
 			response = f"Removed *{media_name}* from the **{watchlist_name}** watchlist!"
 		else:
 			response = f"*{media_name}* is not in the **{watchlist_name}** watchlist!"
@@ -84,7 +85,7 @@ def watchlist_choose(watchlist_name):
 		if watchlist_length == 0:
 			response = f"The **{watchlist_name}** watchlist is empty. \nYou can add items to it using '/add <media_name> {watchlist_name}'"
 		else:
-			selected_media = random.choice(watchlist["media"])
+			selected_media = random.choice(list(watchlist["media"].keys()))
 			response = f"Let's watch **{selected_media}** \nTime to get out the popcorn!"
 	else:
 		response = f"The **{watchlist_name}** watchlist does not exist! \nYou can create it with `/create {watchlist_name}`"
