@@ -560,7 +560,7 @@ async def watchlist_history(interaction: nextcord.Interaction, watchlist_name):
 
 
 """
-Displays all the media that filtered based on tags in a watchlist.
+Display all the media that filtered based on tags in a watchlist.
 Args:
     interaction: The interaction object representing the command invocation.
     watchlist_name: The name of the watchlist to which the watched movies going to be displayed
@@ -597,7 +597,7 @@ async def filter_tags(interaction: nextcord.Interaction, watchlist_name,tags):
     await interaction.response.send_message(response)
 
 """
-Displays random the media that filtered based on tags in a watchlist.
+Display a random selected media that filtered based on tags in a watchlist.
 Args:
     interaction: The interaction object representing the command invocation.
     watchlist_name: The name of the watchlist to which the watched movies going to be displayed
@@ -607,7 +607,7 @@ Returns:
 None
 
 """
-@bot.slash_command(guild_ids=[GUILD_ID], name="random_select_by_tags", description="view filtered medias based on tags in a watchlist")
+@bot.slash_command(guild_ids=[GUILD_ID], name="random_select_by_tags", description="view a randomly seleted filtered media based on tags in a watchlist")
 async def filter_tags(interaction: nextcord.Interaction, watchlist_name,tags):
 
     # Read the JSON data
