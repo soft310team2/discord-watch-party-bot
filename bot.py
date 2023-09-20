@@ -69,7 +69,6 @@ async def help(interaction: nextcord.Interaction):
     response += "/filter_by_tags \n- display all the filtered movies based on tags in a watchlist\n\n"
     response += "/random_select_by_tags \n- display a random filtered movies based on tags in a watchlist\n\n"
 
-
     await interaction.response.send_message(response)
 
 
@@ -93,9 +92,20 @@ async def watchlist_see_all(interaction: nextcord.Interaction):
             else:
                 for media in watchlist["media"]:  # Print every media item
                     media_status = watchlist["media"].get(media)
+                    # Extract the tags for this media
+                    media_tags = media_status.get("tags", [])
+                    # Check if the medis have the media if not make the tag part become NONE
+                    if media_tags:
+                        tags_string = ', '.join(media_tags)  # Convert tags list to a comma-separated string
+                    else:
+                        tags_string = "NONE"
+
+                    # Check if the media is watched
                     if media_status["status"] == "watched":
                         continue
-                    response += f"- {media}\n"
+
+                    # Add the media name and its associated tags to the response
+                    response += f"- {media} (Tags: {tags_string})\n"
             response += "\n\n"
 
     await interaction.response.send_message(response)
@@ -298,10 +308,12 @@ async def watchlist_clear(interaction: nextcord.Interaction, watchlist_name):
 
     await interaction.response.send_message(response)
 
+
 # ---------------------------------------------------------------------------
 # Media Commands - Add tags to a specified media in a watchlist
 # ---------------------------------------------------------------------------
-@bot.slash_command(guild_ids=[GUILD_ID], name="add_tags", description="Add tags to a media in watchlist", default_member_permissions=EDIT_PERMISSION)
+@bot.slash_command(guild_ids=[GUILD_ID], name="add_tags", description="Add tags to a media in watchlist",
+                   default_member_permissions=EDIT_PERMISSION)
 async def add_tags(interaction: nextcord.Interaction, watchlist_name, media_name, tags):
     """
     Allows users to add tags to media items in a watchlist
@@ -317,7 +329,8 @@ async def add_tags(interaction: nextcord.Interaction, watchlist_name, media_name
     """
 
     # These are the tags from which the user can choose from
-    VALID_TAGS = ["movie", "show", "animation", "documentary", "horror", "thriller", "sci-fi", "fantasy", "mystery", "comedy", "action", "adventure"]
+    VALID_TAGS = ["movie", "show", "animation", "documentary", "horror", "thriller", "sci-fi", "fantasy", "mystery",
+                  "comedy", "action", "adventure"]
 
     # Read in JSON data
     watchlist_data = utils.read_watchlist_file(WATCHLISTFILENAME)
@@ -558,7 +571,6 @@ async def watchlist_history(interaction: nextcord.Interaction, watchlist_name):
     await interaction.response.send_message(response)
 
 
-
 """
 Display all the media that filtered based on tags in a watchlist.
 Args:
@@ -570,11 +582,26 @@ Returns:
 None
 
 """
-@bot.slash_command(guild_ids=[GUILD_ID], name="filter_by_tags", description="view filtered medias based on tags in a watchlist")
-async def filter_tags(interaction: nextcord.Interaction, watchlist_name,tags):
+
+
+@bot.slash_command(guild_ids=[GUILD_ID], name="filter_by_tags",
+                   description="view filtered medias based on tags in a watchlist")
+async def filter_tags(interaction: nextcord.Interaction, watchlist_name, tags):
+    VALID_TAGS = ["movie", "show", "animation", "documentary", "horror", "thriller", "sci-fi", "fantasy", "mystery",
+                  "comedy", "action", "adventure"]
 
     # Read the JSON data
     watchlist_data = utils.read_watchlist_file(WATCHLISTFILENAME)
+
+    # Convert input tags to a set
+    input_tags_set = set([tag.strip().lower() for tag in tags.split(',')])
+
+    # Check if all tags are valid
+    if not input_tags_set.issubset(VALID_TAGS):
+        invalid_tags = input_tags_set.difference(VALID_TAGS)
+        response = f"The following tags are invalid: {', '.join(invalid_tags)}. Please use valid tags from the following: \n**{', '.join(VALID_TAGS)}**."
+        await interaction.response.send_message(response)
+        return
 
     # Check if the watchlist exists
     watchlist = utils.get_watchlist(watchlist_data, watchlist_name)
@@ -582,19 +609,20 @@ async def filter_tags(interaction: nextcord.Interaction, watchlist_name,tags):
         if not watchlist["media"]:
             response = f"The {watchlist_name} watchlist is empty."
         else:
-            input_tags_set = set([tag.strip().lower() for tag in tags.split(',')])  # Convert input tags to a set
             matched_media = [media_name for media_name, media_content in watchlist["media"].items() if
-                             input_tags_set.issubset(set(media_content["tags"]))] # using the issubset function istead of ==. Since it would gradually narrow down based on the tags provided
+                             input_tags_set.issubset(set(media_content["tags"]))]
 
             if matched_media:
+                media_with_tags = [(name, ', '.join(watchlist["media"][name]["tags"])) for name in matched_media]
                 response = f"Here are all of the filtered medias in the {watchlist_name} watchlist based on \"{tags}\" tags:\n"
-                response += "\n".join([f"- {name}" for name in matched_media])
+                response += "\n".join([f"- {name} (Tags: {tags})" for name, tags in media_with_tags])
             else:
                 response = "The Media doesn't exist based on provided tags!"
     else:
         response = f"Watchlist named {watchlist_name} does not exist."
 
     await interaction.response.send_message(response)
+
 
 """
 Display a random selected media that filtered based on tags in a watchlist.
@@ -607,11 +635,26 @@ Returns:
 None
 
 """
-@bot.slash_command(guild_ids=[GUILD_ID], name="random_select_by_tags", description="view a randomly seleted filtered media based on tags in a watchlist")
-async def filter_tags(interaction: nextcord.Interaction, watchlist_name,tags):
+
+
+@bot.slash_command(guild_ids=[GUILD_ID], name="random_select_by_tags",
+                   description="view a randomly seleted filtered media based on tags in a watchlist")
+async def filter_tags(interaction: nextcord.Interaction, watchlist_name, tags):
+    VALID_TAGS = ["movie", "show", "animation", "documentary", "horror", "thriller", "sci-fi", "fantasy", "mystery",
+                  "comedy", "action", "adventure"]
 
     # Read the JSON data
     watchlist_data = utils.read_watchlist_file(WATCHLISTFILENAME)
+
+    # Convert input tags to a set
+    input_tags_set = set([tag.strip().lower() for tag in tags.split(',')])
+
+    # Check if all tags are valid
+    if not input_tags_set.issubset(VALID_TAGS):
+        invalid_tags = input_tags_set.difference(VALID_TAGS)
+        response = f"The following tags are invalid: {', '.join(invalid_tags)}. Please use valid tags from the following: \n**{', '.join(VALID_TAGS)}**."
+        await interaction.response.send_message(response)
+        return
 
     # Check if the watchlist exists
     watchlist = utils.get_watchlist(watchlist_data, watchlist_name)
@@ -619,17 +662,20 @@ async def filter_tags(interaction: nextcord.Interaction, watchlist_name,tags):
         if not watchlist["media"]:
             response = f"The {watchlist_name} watchlist is empty."
         else:
-            input_tags_set = set([tag.strip().lower() for tag in tags.split(',')])  # Convert input tags to a set
             matched_media = [media_name for media_name, media_content in watchlist["media"].items() if
-                             input_tags_set.issubset(set(media_content["tags"]))] # using the issubset function istead of ==. Since it would gradually narrow down based on the tags provided
+                             input_tags_set.issubset(set(media_content["tags"]))]
 
             if matched_media:
                 selected_media = random.choice(matched_media)
-                response = f"Here's a randomly selected media from the {watchlist_name} watchlist based on \"{tags}\" tags:\n- {selected_media}"
+                selected_media_tags = ', '.join(watchlist["media"][selected_media]["tags"])
+
+                response = f"Here's a randomly selected media from the {watchlist_name} watchlist based on \"{tags}\" tags:\n- {selected_media} (Tags: {selected_media_tags})"
             else:
                 response = "The Media doesn't exist based on provided tags!"
     else:
         response = f"Watchlist named {watchlist_name} does not exist."
 
     await interaction.response.send_message(response)
+
+
 bot.run(BOT_TOKEN)
