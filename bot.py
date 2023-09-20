@@ -552,7 +552,7 @@ Returns:
 None
 
 """
-@bot.slash_command(guild_ids=[GUILD_ID], name="filter_tags", description="view filtered medias based on tags in a watchlist")
+@bot.slash_command(guild_ids=[GUILD_ID], name="filter_by_tags", description="view filtered medias based on tags in a watchlist")
 async def filter_tags(interaction: nextcord.Interaction, watchlist_name,tags):
 
     # Read the JSON data
