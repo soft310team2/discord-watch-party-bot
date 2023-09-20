@@ -66,7 +66,7 @@ async def help(interaction: nextcord.Interaction):
     response += "/choose \n- select a random item from a watchlist\n\n"
     response += "/status \n- update watch status of a movie or show in a watchlist\n\n"
     response += "/history \n- display all the watched movies in a watchlist\n\n"
-    response += "/filter_tags \n- display all the filtered movies based on tagsin a watchlist\n\n"
+    response += "/filter_tags \n- display all the filtered movies based on tags in a watchlist\n\n"
 
     await interaction.response.send_message(response)
 
