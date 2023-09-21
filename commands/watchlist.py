@@ -66,9 +66,18 @@ def watchlist_see_all():
 			else:
 				for media in watchlist["media"]:  # Print every media item
 					media_status = watchlist["media"].get(media)
+					# Extract the tags for this media
+					media_tags = media_status.get("tags", [])
+					# Check if the medis have the media if not make the tag part become NONE
+					if media_tags:
+						tags_string = ', '.join(media_tags)  # Convert tags list to a comma-separated string
+					else:
+						tags_string = "NONE"
+					# Check if the media is watched
 					if media_status["status"] == "watched":
 						continue
-					response += f"- {media}\n"
+					# Add the media name and its associated tags to the response
+					response += f"- {media} (Tags: {tags_string})\n"
 			response += "\n\n"
 	return response
 
