@@ -551,7 +551,7 @@ async def filter_tags(interaction: nextcord.Interaction, watchlist_name, tags):
             response = f"The {watchlist_name} watchlist is empty."
         else:
             matched_media = [media_name for media_name, media_content in watchlist["media"].items() if
-                             input_tags_set.issubset(set(media_content["tags"]))]
+                             input_tags_set.issubset(set(media_content["tags"]))] # using issubet instead of == would provide a narrow down search
 
             if matched_media:
                 media_with_tags = [(name, ', '.join(watchlist["media"][name]["tags"])) for name in matched_media]
@@ -605,7 +605,7 @@ async def filter_tags(interaction: nextcord.Interaction, watchlist_name, tags):
         else:
             matched_media = [media_name for media_name, media_content in watchlist["media"].items() if
                              input_tags_set.issubset(set(media_content["tags"]))]
-
+            #random select the media from the marched_media set
             if matched_media:
                 selected_media = random.choice(matched_media)
                 selected_media_tags = ', '.join(watchlist["media"][selected_media]["tags"])
