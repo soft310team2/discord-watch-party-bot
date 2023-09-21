@@ -59,28 +59,48 @@ def watchlist_see_all():
 	else:
 		response = "Here are all of your watchlists!\n\n"
 		for watchlist in watchlist_data["watchlists"]:  # Print every watchlist
-			name = watchlist["name"]
-			response += f"{name}\n"
-			if len(watchlist["media"]) == 0:  # Respond if watchlist has no media
-				response += "- There are no items in this watchlist right now\n"
-			else:
-				for media in watchlist["media"]:  # Print every media item
-					media_status = watchlist["media"].get(media)
-					# Extract the tags for this media
-					media_tags = media_status.get("tags", [])
-					# Check if the medis have the media if not make the tag part become NONE
-					if media_tags:
-						tags_string = ', '.join(media_tags)  # Convert tags list to a comma-separated string
-					else:
-						tags_string = "NONE"
-					# Check if the media is watched
-					if media_status["status"] == "watched":
-						continue
-					# Add the media name and its associated tags to the response
-					response += f"- {media} (Tags: {tags_string})\n"
-			response += "\n\n"
+			response += format_watchlist(watchlist)
+   
 	return response
 
+# Format a watchlist
+def format_watchlist(watchlist):
+    name = watchlist["name"]
+    response = f"{name}\n"
+    
+    if len(watchlist["media"]) == 0:  # Respond if watchlist has no media
+        response += "- There are no items in this watchlist right now\n"
+    else:
+        for media in watchlist["media"]:  # Print every media item
+            response += format_media(media, watchlist["media"].get(media))
+            
+    response += "\n\n"
+
+    return response
+
+
+# Format a media
+def format_media(media, media_values):
+    
+    # Extract the tags for this media
+    media_tags = media_values.get("tags", [])
+    
+    # Check if the medis have the media if not make the tag part become NONE
+    if media_tags:
+        tags_string = ', '.join(media_tags)  # Convert tags list to a comma-separated string
+    else:
+        tags_string = "NONE"
+    
+    # Check if the media is watched
+    if media_values.get("status") == "watched":
+        return ""
+
+    # Add the media name and its associated tags to the response
+    response = f"- {media} (Tags: {tags_string})\n"
+    
+    return response
+
+    
 # Deletes a watchlist
 def watchlist_delete(watchlist_name):
 	"""
