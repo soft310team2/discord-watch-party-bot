@@ -11,6 +11,16 @@ WATCHLISTFILENAME = "watchlist.json"
 
 # User joins the watchlist
 def watchlist_join(interaction: nextcord.Interaction, watchlist_name):
+	"""
+		   Joins the user to the watchlist
+
+		   Parameters:
+		   interaction (nextcord.Interaction): The interaction object representing the command invocation.
+		   watchlist_name (str): The name of the watchlist to which the watched movies going to be displayed
+
+		   Returns:
+		   The response message
+		   """
 	# read the json to get all watchlist list
 	watchlist_data = utils.read_watchlist_file(WATCHLISTFILENAME)
 
@@ -33,6 +43,16 @@ def watchlist_join(interaction: nextcord.Interaction, watchlist_name):
 
 # User leaves the watchlist
 def watchlist_leave(interaction: nextcord.Interaction, watchlist_name):
+	"""
+	User leaves the watchlist
+
+	Parameters:
+		interaction (nextcord.Interaction): The interaction object representing the command invocation.
+	watchlist_name (str): The name of the watchlist to which the watched movies going to be displayed
+
+	Returns:
+	The response message
+	"""
 	# read the json to get all watchlist list
 	watchlist_data = utils.read_watchlist_file(WATCHLISTFILENAME)
 
@@ -55,6 +75,16 @@ def watchlist_leave(interaction: nextcord.Interaction, watchlist_name):
 
 # See which users have joined the watchlist
 async def watchlist_particpants(bot, watchlist_name):
+	"""
+	    See all user in the watchlist
+
+	    Parameters:
+	    bot: the discord bot
+	    watchlist_name (str): The name of the watchlist to which the watched movies going to be displayed
+
+	    Returns:
+	    The response message
+	    """
 	# read the json to get all watchlist list
 	watchlist_data = utils.read_watchlist_file(WATCHLISTFILENAME)
 
@@ -75,6 +105,15 @@ async def watchlist_particpants(bot, watchlist_name):
 
 # sends a ping to everyone who has joined the watchlist
 def watchlist_notifyall(watchlist_name):
+	"""
+	Notify all users in a watchlist
+
+	Parameters:
+	watchlist_name (str): The name of the watchlist to which the watched movies going to be displayed
+
+	Returns:
+	The response message
+	"""
 	# read the json to get all watchlist list
 	watchlist_data = utils.read_watchlist_file(WATCHLISTFILENAME)
 	# add participant to watchlist

@@ -12,6 +12,15 @@ WATCHLISTFILENAME = "watchlist.json"
 
 #Creates a new watchlist
 def watchlist_create(watchlist_name):
+	"""
+	   Creates a watchlist
+
+	   Parameters:
+	   watchlist_name (str): The name of the watchlist to which the watched movies going to be displayed
+
+	   Returns:
+	   The response message
+	   """
 	# read the json to get all watchlist lists
 	watchlist_data = utils.read_watchlist_file(WATCHLISTFILENAME)
 
@@ -33,6 +42,15 @@ def watchlist_create(watchlist_name):
 
 # Sees all the watchlist
 def watchlist_see_all():
+	"""
+	   See all watchlists
+
+	   Parameters:
+	   watchlist_name (str): The name of the watchlist to which the watched movies going to be displayed
+
+	   Returns:
+	   The response message
+	   """
 	# read the json to get all watchlist lists
 	watchlist_data = utils.read_watchlist_file(WATCHLISTFILENAME)
 
@@ -56,6 +74,15 @@ def watchlist_see_all():
 
 # Deletes a watchlist
 def watchlist_delete(watchlist_name):
+	"""
+	Delete a watchlist
+
+	Parameters:
+	watchlist_name (str): The name of the watchlist to which the watched movies going to be displayed
+
+	Returns:
+	The response message
+	"""
 	# read the json to get all watchlist list
 	watchlist_data = utils.read_watchlist_file(WATCHLISTFILENAME)
 
@@ -72,6 +99,13 @@ def watchlist_delete(watchlist_name):
 
 # Deletes all watchlist
 def watchlist_delete_all():
+	"""
+	Delete All watchlists
+
+
+	Returns:
+	The response message
+	"""
 	watchlist_data = utils.read_watchlist_file(WATCHLISTFILENAME)
 	if len(watchlist_data["watchlists"]) == 0:
 		response = "There are no watchlists for me to delete ¯\_(ツ)_/¯"
@@ -80,31 +114,4 @@ def watchlist_delete_all():
 		utils.write_watchlist_file(WATCHLISTFILENAME, watchlist_data)
 		response = "Removed all watchlists, use /create to make a new one!"
 	return response
-def watchlist_view(watchlist_name):
-	"""
-	   Displays all the movies that have not been watched in a watchlist.
 
-	   Parameters:
-	   interaction (nextcord.Interaction): The interaction object representing the command invocation.
-	   watchlist_name (str): The name of the watchlist to which the watched movies going to be displayed
-
-	   Returns:
-	   None
-	   """
-	# read the json to get all watchlist list
-	watchlist_data = utils.read_watchlist_file(WATCHLISTFILENAME)
-	# Find the watchlist
-	watchlist = utils.get_watchlist(watchlist_data, watchlist_name)
-	if (watchlist != None):
-		if len(watchlist["media"]) == 0:
-			response = f"The **{watchlist_name}** watchlist is empty."
-		else:
-			response = f"Here are all of the items in the **{watchlist_name}** watchlist!\n"
-			for media in watchlist["media"]:  # Print every media item
-				media_status = watchlist["media"].get(media)
-				if media_status["status"] == "watched":
-					continue
-				response += f"- {media}\n"
-	else:
-		response = f"Watchlist named {watchlist_name} does not exist."
-	return response

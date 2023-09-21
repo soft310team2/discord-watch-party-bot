@@ -14,12 +14,11 @@ def watchlist_add(media_name, watchlist_name):
 	    Adds a movie or show to a specified watchlist.
 
 	    Parameters:
-	    interaction (nextcord.Interaction): The interaction object representing the command invocation.
 	    media_name (str): The name of the movie or show to be added.
 	    watchlist_name (str): The name of the watchlist to which the movie or show will be added.
 
 	    Returns:
-	    None
+	    The response message
 	    """
 	# Read the JSON data
 	watchlist_data = utils.read_watchlist_file(WATCHLISTFILENAME)
@@ -48,12 +47,11 @@ def watchlist_delete_media(media_name, watchlist_name):
 	    Removes a movie or show from a specified watchlist.
 
 	    Parameters:
-	    interaction (nextcord.Interaction): The interaction object representing the command invocation.
 	    media_name (str): The name of the movie or show to be removed.
 	    watchlist_name (str): The name of the watchlist from which the movie or show will be removed.
 
 	    Returns:
-	    None
+	    The response message
 	    """
 	# Read the JSON data
 	watchlist_data = utils.read_watchlist_file(WATCHLISTFILENAME)
@@ -77,6 +75,15 @@ def watchlist_delete_media(media_name, watchlist_name):
 
 #Choose a media to watch at random from a watchlist
 def watchlist_choose(watchlist_name):
+	"""
+	    Chooses a media in a watchlist at random
+
+	    Parameters:
+	    watchlist_name (str): The name of the watchlist to which the watched movies going to be displayed
+
+	    Returns:
+	    The response message
+	"""
 	watchlist_data = utils.read_watchlist_file(WATCHLISTFILENAME)
 
 	watchlist = utils.get_watchlist(watchlist_data, watchlist_name)
@@ -93,6 +100,15 @@ def watchlist_choose(watchlist_name):
 
 #Clear all media from a watchlist
 def watchlist_clear(watchlist_name):
+	"""
+		  Removes all the media from the watchlist
+
+		   Parameters:
+		   watchlist_name (str): The name of the watchlist to which the watched movies going to be displayed
+
+		   Returns:
+		   The response message
+		   """
 	# Read the JSON data
 	watchlist_data = utils.read_watchlist_file(WATCHLISTFILENAME)
 
@@ -107,6 +123,35 @@ def watchlist_clear(watchlist_name):
 
 		# Write the updated JSON data
 		utils.write_watchlist_file(WATCHLISTFILENAME, watchlist_data)
+	else:
+		response = f"Watchlist named {watchlist_name} does not exist."
+	return response
+
+#View a specific watchlist
+def watchlist_view(watchlist_name):
+	"""
+	   Displays all the movies that have not been watched in a watchlist.
+
+	   Parameters:
+	   watchlist_name (str): The name of the watchlist to which the watched movies going to be displayed
+
+	   Returns:
+	   The response message
+	   """
+	# read the json to get all watchlist list
+	watchlist_data = utils.read_watchlist_file(WATCHLISTFILENAME)
+	# Find the watchlist
+	watchlist = utils.get_watchlist(watchlist_data, watchlist_name)
+	if (watchlist != None):
+		if len(watchlist["media"]) == 0:
+			response = f"The **{watchlist_name}** watchlist is empty."
+		else:
+			response = f"Here are all of the items in the **{watchlist_name}** watchlist!\n"
+			for media in watchlist["media"]:  # Print every media item
+				media_status = watchlist["media"].get(media)
+				if media_status["status"] == "watched":
+					continue
+				response += f"- {media}\n"
 	else:
 		response = f"Watchlist named {watchlist_name} does not exist."
 	return response

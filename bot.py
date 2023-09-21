@@ -28,23 +28,34 @@ EDIT_PERMISSION = 1024
 async def on_ready():
     print(f'Logged in as {bot.user}')
 
+
+# ---------------------------------------------------------------------------
+# Misc Commands - Ping, Popcorn and Help commands
+# ---------------------------------------------------------------------------
 # Functionality located in the misc.py in commands folder
 @bot.slash_command(guild_ids=[GUILD_ID], name="ping", description="pongs the user")
 async def ping(interaction: nextcord.Interaction):
     response = misc.ping()
     await interaction.response.send_message(response)
 
-# Functionality located in the misc.py in commands folder
 @bot.slash_command(guild_ids=[GUILD_ID], name="popcorn", description="scoop some popcorn!")
 async def popcorn(interaction: nextcord.Interaction):
     response = misc.popcorn(interaction)
     await interaction.response.send_message(response)
 
-# Functionality located in the misc.py in commands folder
 # Help Command
-
 @bot.slash_command(guild_ids=[GUILD_ID], name="help", description="lists all commands and descriptions")
 async def help(interaction: nextcord.Interaction):
+    """
+	   Displays all the commands of the bot
+
+	   Parameters:
+	   interaction (nextcord.Interaction): The interaction object representing the command invocation.
+
+
+	   Returns:
+	   None
+	   """
     response = misc.help()
     await interaction.response.send_message(response)
 
@@ -56,6 +67,15 @@ async def help(interaction: nextcord.Interaction):
 # Functionality located in the watchlist.py in commands folder
 @bot.slash_command(guild_ids=[GUILD_ID], name="seeall", description="see all watchlists")
 async def watchlist_see_all(interaction: nextcord.Interaction):
+    """
+       See all the watchlists
+
+       Parameters:
+       interaction (nextcord.Interaction): The interaction object representing the command invocation.
+
+       Returns:
+       None
+       """
     response = watchlist.watchlist_see_all()
     await interaction.response.send_message(response)
 
@@ -64,6 +84,16 @@ async def watchlist_see_all(interaction: nextcord.Interaction):
                    description="create a new watchlist",
                    default_member_permissions=EDIT_PERMISSION)
 async def watchlist_create(interaction: nextcord.Interaction, watchlist_name):
+    """
+       Creates a watchlist
+
+       Parameters:
+       interaction (nextcord.Interaction): The interaction object representing the command invocation.
+       watchlist_name (str): The name of the watchlist to which the watched movies going to be displayed
+
+       Returns:
+       None
+       """
     response = watchlist.watchlist_create(watchlist_name)
     await interaction.response.send_message(response)
 
@@ -73,6 +103,15 @@ async def watchlist_create(interaction: nextcord.Interaction, watchlist_name):
                    description="delete all existing watchlists", 
                    default_member_permissions=EDIT_PERMISSION)
 async def watchlist_delete_all(interaction: nextcord.Interaction):
+    """
+        Delete all watchlists
+
+        Parameters:
+        interaction (nextcord.Interaction): The interaction object representing the command invocation.
+
+        Returns:
+        None
+    """
     # read the json to get all watchlist list
     response = watchlist.watchlist_delete_all()
     await interaction.response.send_message(response)
@@ -82,6 +121,16 @@ async def watchlist_delete_all(interaction: nextcord.Interaction):
                    description="delete an existing watchlist",
                    default_member_permissions=EDIT_PERMISSION)
 async def watchlist_delete(interaction: nextcord.Interaction, watchlist_name):
+    """
+          Delete a watchlist
+
+          Parameters:
+          interaction (nextcord.Interaction): The interaction object representing the command invocation.
+          watchlist_name (str): The name of the watchlist to which the watched movies going to be displayed
+
+          Returns:
+          None
+          """
     response = watchlist.watchlist_delete(watchlist_name)
     await interaction.response.send_message(response)
 
@@ -95,7 +144,17 @@ async def watchlist_delete(interaction: nextcord.Interaction, watchlist_name):
                    description="add a movie or show to a watchlist",
                    default_member_permissions=EDIT_PERMISSION)
 async def watchlist_add(interaction: nextcord.Interaction, media_name, watchlist_name):
+    """
+        Adds a movie or show to a specified watchlist.
 
+        Parameters:
+        interaction (nextcord.Interaction): The interaction object representing the command invocation.
+        media_name (str): The name of the movie or show to be added.
+        watchlist_name (str): The name of the watchlist to which the movie or show will be added.
+
+        Returns:
+        None
+        """
     response = media.watchlist_add(media_name, watchlist_name)
     await interaction.response.send_message(response)
 
@@ -109,6 +168,17 @@ async def watchlist_add(interaction: nextcord.Interaction, media_name, watchlist
                    description="remove a movie or show from a watchlist",
                    default_member_permissions=EDIT_PERMISSION)
 async def watchlist_delete_media(interaction: nextcord.Interaction, media_name, watchlist_name):
+    """
+    	    Removes a movie or show from a specified watchlist.
+
+    	    Parameters:
+    	    interaction (nextcord.Interaction): The interaction object representing the command invocation.
+    	    media_name (str): The name of the movie or show to be removed.
+    	    watchlist_name (str): The name of the watchlist from which the movie or show will be removed.
+
+    	    Returns:
+    	    None
+    	    """
     response = media.watchlist_delete_media(media_name, watchlist_name)
     await interaction.response.send_message(response)
     
@@ -121,6 +191,16 @@ async def watchlist_delete_media(interaction: nextcord.Interaction, media_name, 
                    name="choose",
                    description="select a random item from a watchlist")
 async def watchlist_choose(interaction: nextcord.Interaction, watchlist_name):
+    """
+        Chooses a media in a watchlist at random
+
+        Parameters:
+        interaction (nextcord.Interaction): The interaction object representing the command invocation.
+        watchlist_name (str): The name of the watchlist to which the watched movies going to be displayed
+
+        Returns:
+        None
+    """
     response = media.watchlist_choose(watchlist_name)
     await interaction.response.send_message(response)
 
@@ -133,6 +213,16 @@ async def watchlist_choose(interaction: nextcord.Interaction, watchlist_name):
                    name="clear",
                    description="remove all media from a watchlist")
 async def watchlist_clear(interaction: nextcord.Interaction, watchlist_name):
+    """
+    		  Removes all the media from the watchlist
+
+    		   Parameters:
+    		   interaction (nextcord.Interaction): The interaction object representing the command invocation.
+    		   watchlist_name (str): The name of the watchlist to which the watched movies going to be displayed
+
+    		   Returns:
+    		   None
+    		   """
     response = media.watchlist_clear(watchlist_name)
     await interaction.response.send_message(response)
 
@@ -143,7 +233,16 @@ async def watchlist_clear(interaction: nextcord.Interaction, watchlist_name):
 # Functionality located in the media.py in commands folder
 @bot.slash_command(guild_ids=[GUILD_ID], name="view", description="view the contents of a watchlist")
 async def watchlist_view(interaction: nextcord.Interaction, watchlist_name):
+    """
+       Displays all the movies that have not been watched in a watchlist.
 
+       Parameters:
+       interaction (nextcord.Interaction): The interaction object representing the command invocation.
+       watchlist_name (str): The name of the watchlist to which the watched movies going to be displayed
+
+       Returns:
+       None
+       """
     response = watchlist.watchlist_view(watchlist_name)
     await interaction.response.send_message(response)
 
@@ -272,7 +371,6 @@ async def watchlist_update_status(interaction: nextcord.Interaction, watch_statu
     Returns:
     None
     """
-    # TODO: Provide user with 3 options menu instead
     watch_status = watch_status.strip().lower()
     valid_statuses = ["unwatched", "in progress", "watched"]
 
@@ -310,24 +408,64 @@ async def watchlist_update_status(interaction: nextcord.Interaction, watch_statu
 
 @bot.slash_command(guild_ids=[GUILD_ID], name="join", description="join an existing watchlist")
 async def watchlist_join(interaction: nextcord.Interaction, watchlist_name):
+    """
+        Joins the user to the watchlist
+
+        Parameters:
+        interaction (nextcord.Interaction): The interaction object representing the command invocation.
+        watchlist_name (str): The name of the watchlist to which the watched movies going to be displayed
+
+        Returns:
+        None
+        """
     response = participant.watchlist_join(interaction, watchlist_name)
     await interaction.response.send_message(response)
 
 # Functionality located in the participant.py in commands folder
 @bot.slash_command(guild_ids=[GUILD_ID], name="leave", description="leave from a joined watchlist")
 async def watchlist_leave(interaction: nextcord.Interaction, watchlist_name):
+    """
+            User leaves the watchlist
+
+            Parameters:
+            interaction (nextcord.Interaction): The interaction object representing the command invocation.
+            watchlist_name (str): The name of the watchlist to which the watched movies going to be displayed
+
+            Returns:
+            None
+            """
     response = participant.watchlist_leave(interaction, watchlist_name)
     await interaction.response.send_message(response)
 
 # Functionality located in the participant.py in commands folder
 @bot.slash_command(guild_ids=[GUILD_ID], name="participants", description="view a watchlist's participants")
 async def watchlist_participants(interaction: nextcord.Interaction, watchlist_name):
+    """
+    See all user in the watchlist
+
+    Parameters:
+    interaction (nextcord.Interaction): The interaction object representing the command invocation.
+    watchlist_name (str): The name of the watchlist to which the watched movies going to be displayed
+
+    Returns:
+    None
+    """
     response = await participant.watchlist_particpants(bot, watchlist_name)
     await interaction.response.send_message(response)
 
 # Functionality located in the participant.py in commands folder
 @bot.slash_command(guild_ids=[GUILD_ID], name="poke", description="notify all participants of a watchlist")
 async def watchlist_notifyall(interaction: nextcord.Interaction, watchlist_name):
+    """
+    Notify all users in a watchlist
+
+    Parameters:
+    interaction (nextcord.Interaction): The interaction object representing the command invocation.
+    watchlist_name (str): The name of the watchlist to which the watched movies going to be displayed
+
+    Returns:
+    None
+    """
     response = participant.watchlist_notifyall(watchlist_name)
     await interaction.response.send_message(response)
 

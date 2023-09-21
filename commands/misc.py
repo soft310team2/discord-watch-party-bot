@@ -31,6 +31,10 @@ def popcorn(interaction: nextcord.Interaction):
 
 # Shows all the commands that the bots has
 def help():
+	'''
+	A list of all the commands that are avaliable for the bot
+	Returns:The list of commands that the bot has
+	'''
 	response = "Here are all of my commands:\n\n"
 	response += "/create \n- create a new watchlist\n\n"
 	response += "/delete \n- delete an existing watchlist\n\n"
