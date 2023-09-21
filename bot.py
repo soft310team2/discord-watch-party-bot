@@ -3,7 +3,6 @@ from dotenv import load_dotenv
 import nextcord
 from nextcord.ext import commands
 import random
-import json
 import utils
 # importing the other python files
 from commands import misc, media, watchlist, participant
@@ -27,6 +26,7 @@ EDIT_PERMISSION = 1024
 @bot.event
 async def on_ready():
     print(f'Logged in as {bot.user}')
+    utils.init_watchlist_json(WATCHLISTFILENAME)
 
 
 # ---------------------------------------------------------------------------
