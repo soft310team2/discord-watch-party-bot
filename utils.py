@@ -9,10 +9,10 @@ import os
 #   init_watchlistJSON - Creates a new watchlist.json file if it does not exist when the bot starts
 # ---------------------------------------------------------------------------
 def get_watchlist(watchlist_data, watchlist_name):
-     for watchlist in watchlist_data["watchlists"]:
+    for watchlist in watchlist_data["watchlists"]:
         if watchlist["name"] == watchlist_name:
-           return watchlist
-     return None
+           return watchlist, None
+    return None, f"The **{watchlist_name}** watchlist does not exist! \nYou can create it with `/create {watchlist_name}`"
 
 def read_watchlist_file(watchlist_file_name):
     watchlist_file = open(watchlist_file_name, 'r')
