@@ -26,19 +26,23 @@ def watchlist_join(interaction: nextcord.Interaction, watchlist_name):
 
 	# add participant to watchlist
 	user_id = interaction.user.id
-	watchlist = utils.get_watchlist(watchlist_data, watchlist_name)
-	if (watchlist != None):
-		# check duplication
-		if (user_id in watchlist["participants"]):
-			response = "You are already in this watchlist."
+ 
+	# Check if the watchlist exists
+	watchlist, response = utils.get_watchlist(watchlist_data, watchlist_name)
+ 
+	if watchlist is None:
+		return response
 
-		else:
-			watchlist["participants"].append(user_id)
-			# write the change to json
-			utils.write_watchlist_file(WATCHLISTFILENAME, watchlist_data)
-			response = f"You have joined the {watchlist_name} watchlist."
+	# check duplication
+	if (user_id in watchlist["participants"]):
+		response = "You are already in this watchlist."
+
 	else:
-		response = f"Watchlist named {watchlist_name} does not exist"
+		watchlist["participants"].append(user_id)
+		# write the change to json
+		utils.write_watchlist_file(WATCHLISTFILENAME, watchlist_data)
+		response = f"You have joined the {watchlist_name} watchlist."
+	
 	return response
 
 # User leaves the watchlist
@@ -56,21 +60,25 @@ def watchlist_leave(interaction: nextcord.Interaction, watchlist_name):
 	# read the json to get all watchlist list
 	watchlist_data = utils.read_watchlist_file(WATCHLISTFILENAME)
 
-	# Check if the watchlist exists
+	
 	user_id = interaction.user.id
-	watchlist = utils.get_watchlist(watchlist_data, watchlist_name)
-	if (watchlist != None):
-		# Check if user id is in the participants list
-		if (user_id in watchlist["participants"]):
-			watchlist["participants"].remove(user_id)
-			# write the change to json
-			utils.write_watchlist_file(WATCHLISTFILENAME, watchlist_data)
-			response = f"You have been removed from the {watchlist_name} watchlist."
+ 
+	# Check if the watchlist exists
+	watchlist, response = utils.get_watchlist(watchlist_data, watchlist_name)
+ 
+	if watchlist is None:
+		return response
 
-		else:
-			response = "You are not currently in this watchlist"
+	# Check if user id is in the participants list
+	if (user_id in watchlist["participants"]):
+		watchlist["participants"].remove(user_id)
+		# write the change to json
+		utils.write_watchlist_file(WATCHLISTFILENAME, watchlist_data)
+		response = f"You have been removed from the {watchlist_name} watchlist."
+
 	else:
-		response = f"Watchlist named {watchlist_name} does not exist"
+		response = "You are not currently in this watchlist"
+	
 	return response
 
 # See which users have joined the watchlist
@@ -88,19 +96,21 @@ async def watchlist_particpants(bot, watchlist_name):
 	# read the json to get all watchlist list
 	watchlist_data = utils.read_watchlist_file(WATCHLISTFILENAME)
 
-	# Find watchlist
-	watchlist = utils.get_watchlist(watchlist_data, watchlist_name)
-	if (watchlist != None):
-		# Print Members
-		response = f"Participants of {watchlist_name} watchlist:\n"
-		for user_id in watchlist["participants"]:
-			user = await bot.fetch_user(user_id)  # This is an api call, must use await then get the name component step by step
-			user_name = user.name
-			response += "- " + user_name + "\n"
-		if len(watchlist["participants"]) == 0:
-			response = f"There are no participants in {watchlist_name} yet  :("
-	else:
-		response = f"Watchlist named {watchlist_name} does not exist"
+	# Check if the watchlist exists
+	watchlist, response = utils.get_watchlist(watchlist_data, watchlist_name)
+ 
+	if watchlist is None:
+		return response
+
+	# Print Members
+	response = f"Participants of {watchlist_name} watchlist:\n"
+	for user_id in watchlist["participants"]:
+		user = await bot.fetch_user(user_id)  # This is an api call, must use await then get the name component step by step
+		user_name = user.name
+		response += "- " + user_name + "\n"
+	if len(watchlist["participants"]) == 0:
+		response = f"There are no participants in {watchlist_name} yet  :("
+	
 	return response
 
 # sends a ping to everyone who has joined the watchlist
@@ -116,13 +126,15 @@ def watchlist_notifyall(watchlist_name):
 	"""
 	# read the json to get all watchlist list
 	watchlist_data = utils.read_watchlist_file(WATCHLISTFILENAME)
-	# add participant to watchlist
-	watchlist = utils.get_watchlist(watchlist_data, watchlist_name)
-	if (watchlist != None):
-		mentions = ' '.join(f'<@{user_id}>' for user_id in
-		                    watchlist["participants"])  # Generate string of mentions in space-separated manner
-		response = f'A watch party for the {watchlist_name} watchlist is starting soon! {mentions}'
+ 
+	# Check if the watchlist exists
+	watchlist, response = utils.get_watchlist(watchlist_data, watchlist_name)
+ 
+	if watchlist is None:
+		return response
 
-	else:
-		response = f"Watchlist named {watchlist_name} does not exist"
+	mentions = ' '.join(f'<@{user_id}>' for user_id in
+						watchlist["participants"])  # Generate string of mentions in space-separated manner
+	response = f'A watch party for the {watchlist_name} watchlist is starting soon! {mentions}'
+
 	return response

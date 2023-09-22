@@ -247,7 +247,7 @@ async def watchlist_view(interaction: nextcord.Interaction, watchlist_name):
        Returns:
        None
        """
-    response = watchlist.watchlist_view(watchlist_name)
+    response = media.watchlist_view(watchlist_name)
     await interaction.response.send_message(response)
 
 

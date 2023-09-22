@@ -115,15 +115,17 @@ def watchlist_delete(watchlist_name):
 	# read the json to get all watchlist list
 	watchlist_data = utils.read_watchlist_file(WATCHLISTFILENAME)
 
-	# Find watchlist
-	watchlist = utils.get_watchlist(watchlist_data, watchlist_name)
-	if (watchlist != None):
-		watchlist_data["watchlists"].remove(watchlist)
-		utils.write_watchlist_file(WATCHLISTFILENAME, watchlist_data)
-		response = f"Removed watchlist named {watchlist_name}."
+	# Check if the watchlist exists
+	watchlist, response = utils.get_watchlist(watchlist_data, watchlist_name)
+ 
+	if watchlist is None:
+		return response
+	
+	watchlist_data["watchlists"].remove(watchlist)
+	utils.write_watchlist_file(WATCHLISTFILENAME, watchlist_data)
+	response = f"Removed watchlist named {watchlist_name}."
 
-	else:
-		response = f"Watchlist named {watchlist_name} does not exist"
+	
 	return response
 
 # Deletes all watchlist
