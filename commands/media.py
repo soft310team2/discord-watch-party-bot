@@ -137,6 +137,16 @@ def watchlist_clear(watchlist_name):
 	return response
 
 #View a specific watchlist
+def allWatched(mediaList):
+	total = len(mediaList)
+	watched = 0
+	for media in mediaList:
+		media_status = mediaList.get(media)
+		if media_status["status"] == "watched":
+			watched += 1;
+	return total == watched
+
+
 def watchlist_view(watchlist_name):
 	"""
 	Displays all the movies that have not been watched in a watchlist.
@@ -158,6 +168,8 @@ def watchlist_view(watchlist_name):
 
 	if len(watchlist["media"]) == 0:
 		response = f"The **{watchlist_name}** watchlist is empty."
+	elif allWatched(watchlist['media']):
+		response = f"You've already watched everything in **{watchlist_name}**!"
 	else:
 		response = f"Here are all of the items in the **{watchlist_name}** watchlist!\n"
 		for media in watchlist["media"]:  # Print every media item
