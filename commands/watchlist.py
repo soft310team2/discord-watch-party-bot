@@ -7,10 +7,11 @@ import utils
 # Delete - Delete a watchlist
 # Delete All - Delete all watchlist
 # View - View contents of a watchlist
+# History - view all previously watched media
 
 WATCHLISTFILENAME = "watchlist.json"
 
-#Creates a new watchlist
+#Creates a new watchlist/
 def watchlist_create(watchlist_name):
 	"""
 	   Creates a watchlist
@@ -144,5 +145,32 @@ def watchlist_delete_all():
 		watchlist_data = {"watchlists": []}
 		utils.write_watchlist_file(WATCHLISTFILENAME, watchlist_data)
 		response = "Removed all watchlists, use /create to make a new one!"
+	return response
+
+def watchlist_history(watchlist_name):
+	"""
+	    Displays all the movies that have been watched in a watchlist.
+
+	    Parameters:
+	    watchlist_name (str): The name of the watchlist to which the watched movies going to be displayed
+
+	    Returns:
+	    The response message
+	    """
+	# Read the JSON data
+	watchlist_data = utils.read_watchlist_file(WATCHLISTFILENAME)
+
+	# Check if the watchlist exists
+	watchlist, response = utils.get_watchlist(watchlist_data, watchlist_name)
+	if watchlist is None:
+		return response
+	if len(watchlist["media"]) == 0:
+		response = f"The **{watchlist_name}** watchlist is empty."
+	else:
+		response = f"Here are all of the medias in the **{watchlist_name}** watchlist you have watched!\n"
+		for media_name in watchlist["media"]:  # Print every media item with status watched
+			media = watchlist["media"].get(media_name)
+			if media["status"] == "watched":
+				response += f"- {media_name}\n"
 	return response
 
