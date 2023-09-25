@@ -8,11 +8,11 @@ Popcorn is not just great at selecting media based on you and your friends' pref
 
 Well... At least in theory. So far, only release 1 and 2 have been implemented.
 
-| Release             | Description |
-|---------------------| --- |
-| **Release 1**       | Bot that can be run by an individual from their machine with a local memory that can be accessed by all server members. Basic adding, deleteing, viewing, notifications, and permissions functionality is implemented. Basic user experience to use bot for watchlists in servers fullly implemented. |
-| **Release 2**       | We will work on adding tags and statuses to individual media for better filtering. More thorough user experience will be implemented, with more specific commands. |
-| **Release 3 (TBA)** | We will add API connectiosn to get third party searching and media information to show real world info about media items. Voting implementation will be implemented, possibly with discord event set up as well. |
+| Release       | Description |
+|---------------| --- |
+| **Release 1** | Bot that can be run by an individual from their machine with a local memory that can be accessed by all server members. Basic adding, deleteing, viewing, notifications, and permissions functionality is implemented. Basic user experience to use bot for watchlists in servers fullly implemented. |
+| **Release 2** | We will work on adding tags and statuses to individual media for better filtering. More thorough user experience will be implemented, with more specific commands. |
+| **Release 3** | We will add API connectiosn to get third party searching and media information to show real world info about media items. Voting implementation will be implemented, possibly with discord event set up as well. |
 
 ## Please See:
 #### [Code of Conduct](CODE_OF_CONDUCT.md)
