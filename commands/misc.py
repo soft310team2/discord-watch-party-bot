@@ -51,7 +51,7 @@ def help():
 	response += "/choose \n- select a random item from a watchlist\n\n"
 	response += "/status \n- update watch status of a movie or show in a watchlist\n\n"
 	response += "/history \n- display all the watched movies in a watchlist\n\n"
-	response += "/filter_tags \n- display all the filtered movies based on tags in a watchlist\n\n"
+	response += "/filter_by_tags \n- display all the filtered movies based on tags in a watchlist\n\n"
 	response += "/random_select_by_tags \n- display a random filtered movies based on tags in a watchlist\n\n"
 	response += "/add_tags \n- Add any of the following tags to a media item: ***movie, show, animation, documentary, horror, thriller, sci-fi, fantasy, mystery, comedy, action, adventure*** \n\n"
 	response += "/delete_tags \n- Remove added tags from a media item in some watchlist"
