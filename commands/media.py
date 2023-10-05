@@ -43,7 +43,7 @@ def watchlist_add(media_name, watchlist_name):
     # Check if media already exists in watchlist
     if media_name not in watchlist["media"]:
         # Sets media to default unwatched and makes it a dictionary so easier access
-        watchlist["media"][media_name] = {"status": "unwatched", "tags": []}
+        watchlist["media"][media_name] = {"status": "unwatched", "tags": [], "description": "none"}
         response = f"Added *{media_name}* to the **{watchlist_name}** watchlist!"
     else:
         response = f"*{media_name}* is already in the **{watchlist_name}** watchlist!"

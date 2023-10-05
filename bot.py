@@ -459,7 +459,7 @@ async def watchlist_notifyall(interaction: nextcord.Interaction, watchlist_name)
 # Media Commands - Add description to a media
 # ---------------------------------------------------------------------------
 # Functionality located in the media.py in commands folder
-@bot.slash_command(guild_ids=[GUILD_ID], name="add_description", description="view the description of a media")
+@bot.slash_command(guild_ids=[GUILD_ID], name="add_description", description="add the description of a media")
 async def add_description(interaction: nextcord.Interaction, watchlist_name, media_name, description):
     """
 	Add the description to a particular media
