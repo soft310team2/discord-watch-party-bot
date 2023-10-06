@@ -55,4 +55,6 @@ def help():
 	response += "/random_select_by_tags \n- display a random filtered movies based on tags in a watchlist\n\n"
 	response += "/add_tags \n- Add any of the following tags to a media item: ***movie, show, animation, documentary, horror, thriller, sci-fi, fantasy, mystery, comedy, action, adventure*** \n\n"
 	response += "/delete_tags \n- Remove added tags from a media item in some watchlist"
+	response += "/start_vote \n- Starts a vote for the watchlist"
+	response += "/vote \n- Adds a vote for a media in a watchlist"
 	return response

@@ -153,7 +153,33 @@ async def watchlist_history(interaction: nextcord.Interaction, watchlist_name):
     response = watchlist.watchlist_history(watchlist_name)
     await interaction.response.send_message(response)
 
+@bot.slash_command(guild_ids=[GUILD_ID], name="start_vote", description="start a vote to determine what media to watch")
+async def watchlist_vote_start(interaction: nextcord.Interaction, watchlist_name):
+    """
+    Notifies all the users in a watchlist that a vote is starting for all unwatched media in a watchlist
+    Args:
+        interaction(nextcord.Interaction): The interaction object representing the command invocation.
+        watchlist_name: the watchlist name that the vote will start
 
+    Returns:None
+
+    """
+    response = watchlist.watchlist_start_vote(interaction, watchlist_name)
+    await interaction.response.send_message(response)
+
+@bot.slash_command(guild_ids=[GUILD_ID], name="vote", description="add a vote to the watchlist")
+async def watchlist_vote(interaction: nextcord.Interaction, watchlist_name, media_name):
+    """
+
+    Args:
+        interaction: The interaction object representing the command invocation.
+        watchlist_name: the watchlist name
+        media_name: the media that the user is voting for
+    Returns:
+    """
+
+    response = watchlist.watchlist_vote(interaction, watchlist_name, media_name)
+    await interaction.response.send_message(response)
 # ---------------------------------------------------------------------------
 # Media Commands - Add media to watchlist
 # ---------------------------------------------------------------------------
