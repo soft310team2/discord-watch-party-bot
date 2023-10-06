@@ -439,7 +439,23 @@ def add_description(watchlist_name, media_name, description):
     None
 	"""
 
-    response = f"Hehi"
+    # Read the JSON data
+    watchlist_data = utils.read_watchlist_file(WATCHLISTFILENAME)
+    # Check if the watchlist exists
+    watchlist, response = utils.get_watchlist(watchlist_data, watchlist_name)
+    if watchlist is None:
+        return response
+    # Check if media already exists in watchlist
+    if media_name in watchlist["media"]:
+        media = watchlist["media"].get(media_name)
+        media["description"] = description
+        response = f"Updated media description to *{media_name}* in the **{watchlist_name}** watchlist"
+    else:
+        response = f"*{media_name}* is not in the **{watchlist_name}** watchlist"
+
+    # Update JSON file
+    utils.write_watchlist_file(WATCHLISTFILENAME, watchlist_data)
+
     return response
 
 
