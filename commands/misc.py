@@ -57,4 +57,8 @@ def help():
 	response += "/delete_tags \n- Remove added tags from a media item in some watchlist"
 	response += "/start_vote \n- Starts a vote for the watchlist"
 	response += "/vote \n- Adds a vote for a media in a watchlist"
+	response += "/delete_tags \n- Remove added tags from a media item in some watchlist\n\n"
+	response += "/add_description \n- Add the description to a media\n\n"
+	response += "/delete_description \n- Delete the description to a media\n\n"
+	response += "/description \n- View the description of a media"
 	return response
