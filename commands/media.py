@@ -43,7 +43,7 @@ def watchlist_add(media_name, watchlist_name):
     # Check if media already exists in watchlist
     if media_name not in watchlist["media"]:
         # Sets media to default unwatched and makes it a dictionary so easier access
-        watchlist["media"][media_name] = {"status": "unwatched", "tags": [], "description": "none"}
+        watchlist["media"][media_name] = {"status": "unwatched", "tags": [], "reviews": [], "description": "none"}
         response = f"Added *{media_name}* to the **{watchlist_name}** watchlist!"
     else:
         response = f"*{media_name}* is already in the **{watchlist_name}** watchlist!"
@@ -525,3 +525,74 @@ def watchlist_description(watchlist_name, media_name):
         response = f"*{media_name}* is not in the **{watchlist_name}** watchlist"
 
     return response
+
+
+def add_review(watchlist_name, media_name, review_text, user_name):
+    """
+    Lets users add reviews to some media item in a watchlist
+    Args:
+        watchlist_name: The name of the watchlist in which the media item is in
+        media_name: The name of the media item the user wishes to review
+        review_text: The review the user wants to leave
+        user_name: The username of the user who is making the view (Obtained from interaction object)
+
+    Returns:
+        None
+
+    """
+    watchlist_data = utils.read_watchlist_file(WATCHLISTFILENAME)
+    watchlist, response = utils.get_watchlist(watchlist_data, watchlist_name)
+
+    # Ensure the watchlist exists, if not send the response indicating so
+    if watchlist is None:
+        return response
+
+    if media_name in watchlist["media"]:
+        # If the specified media item is actually in the said watchlist, then just simply append the review to the reviews object
+        media = watchlist["media"].get(media_name)
+        media["reviews"].append({"user": user_name, "review": review_text})
+        response = f"Review has successfully been added to *{media_name}* by **{user_name}**!"
+    else:
+        response = f"The media *{media_name}* was not found in **{watchlist_name}**!"
+
+    # Write the contents to the JSON file
+    utils.write_watchlist_file(WATCHLISTFILENAME, watchlist_data)
+    return response
+
+def view_reviews(watchlist_name, media_name):
+    """
+    Lets users view all the reviews of a specified media item
+    Args:
+        watchlist_name: The name of the watchlist in which the media they would like to see reviews for is in
+        media_name: The name of the media item for which users want to see reviews
+
+    Returns:
+        None
+
+    """
+    # Initial setup
+    watchlist_data = utils.read_watchlist_file(WATCHLISTFILENAME)
+    watchlist, response = utils.get_watchlist(watchlist_data, watchlist_name)
+
+    # If the response is None, this means that response is not initialised, so we initialise it with an empty string for now
+    if response is None:
+        response = ""
+
+
+    # If watchlist is None (Could not be found) return appropriate response
+    if watchlist is None:
+        return response
+
+    if media_name in watchlist["media"]:
+        media = watchlist["media"].get(media_name)
+        # If the media item has no reviews, then we should let the user know with an appropriate response message
+        if len(media["reviews"])== 0:
+            response = f"**{media_name}** has not been reviewed by anyone yet... Be the first to review via **/add_review**"
+        # If the media does have reviews, format the reviews and append to the response object
+        for review in media["reviews"]:
+            response += f"User **{review['user']}**: \n *{review['review']}*\n\n"
+
+    return response
+
+
+
