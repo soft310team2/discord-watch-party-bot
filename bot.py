@@ -445,5 +445,22 @@ async def watchlist_notifyall(interaction: nextcord.Interaction, watchlist_name)
     response = participant.watchlist_notifyall(watchlist_name)
     await interaction.response.send_message(response)
 
+# Functionality located in the participant.py in commands folder
+@bot.slash_command(guild_ids=[GUILD_ID], name="event", description="Create a watch party event for users")
+async def create_event(interaction: nextcord.Interaction, media_name, location, date):
+    """
+    Create a discord event to watch the media
+
+    Parameters:
+    interaction (nextcord.Interaction): The interaction object representing the command invocation.
+    media_name (str): The name of the media the event is about
+    location (str): Where the media watching event will take place
+    date (str): The date and time of when the event will take place
+
+    Returns:
+    None
+    """
+    response = await participant.create_event(interaction, media_name, location, date)
+    await interaction.response.send_message(f"Created a watch party event for {media_name}!")
 
 bot.run(BOT_TOKEN)
