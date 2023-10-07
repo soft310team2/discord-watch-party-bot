@@ -49,6 +49,7 @@ def help():
 	response += "/participants \n- view a watchlist's participants\n\n"
 	response += "/poke \n- notify all participants of a watchlist\n\n"
 	response += "/choose \n- select a random item from a watchlist\n\n"
+	response += "/event \n- create a discord watchparty event\n\n"
 	response += "/status \n- update watch status of a movie or show in a watchlist\n\n"
 	response += "/history \n- display all the watched movies in a watchlist\n\n"
 	response += "/filter_by_tags \n- display all the filtered movies based on tags in a watchlist\n\n"
