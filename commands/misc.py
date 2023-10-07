@@ -36,6 +36,7 @@ def help():
 	Returns:The list of commands that the bot has
 	'''
 	response = "Here are all of my commands:\n\n"
+
 	response += "**/create** \n- create a new watchlist\n\n"
 	response += "**/delete** \n- delete an existing watchlist\n\n"
 	response += "**/deleteall** \n- delete all existing watchlists\n\n"
@@ -49,6 +50,7 @@ def help():
 	response += "**/participants** \n- view a watchlist's participants\n\n"
 	response += "**/poke** \n- notify all participants of a watchlist\n\n"
 	response += "**/choose** \n- select a random item from a watchlist\n\n"
+  response += "/event \n- create a discord watchparty event\n\n"
 	response += "**/status** \n- update watch status of a movie or show in a watchlist\n\n"
 	response += "**/history** \n- display all the watched movies in a watchlist\n\n"
 	response += "**/filter_by_tags** \n- display all the filtered movies based on tags in a watchlist\n\n"
@@ -63,4 +65,5 @@ def help():
 	response += "**/description** \n- View the description of a media\n\n"
 	response += "**/add_review** \n- Add a review to a media in some watchlist \n\n"
 	response += "**/see_reviews** \n- See all the reviews left by others in the server for some media \n\n"
+
 	return response
