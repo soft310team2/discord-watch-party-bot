@@ -562,5 +562,31 @@ async def watchlist_description(interaction: nextcord.Interaction, watchlist_nam
     response = media.watchlist_description(watchlist_name, media_name)
     await interaction.response.send_message(response)
 
+@bot.slash_command(guild_ids=[GUILD_ID], name="add_review", description="Add a review to an existing media")
+async def add_review(interaction: nextcord.Interaction, watchlist_name, media_name, review_text):
+    """
+    Add a review to a media item in some watchlist
+
+    Args:
+        interaction: The interaction object representing the command invocation.
+        watchlist_name: The name of the watchlist in which the media item specified is located in
+        media_name: The name of the media item which the user wishes to review
+        review_text: The review the user wishes to add to the media item
+
+    Returns:
+        None
+
+    """
+    response = media.add_review(watchlist_name, media_name, review_text, interaction.user.name)
+    await interaction.response.send_message(response)
+
+
+@bot.slash_command(guild_ids=[GUILD_ID], name="see_reviews", description="See all reviews for a media")
+async def view_review(interaction: nextcord.Interaction, watchlist_name, media_name):
+    response = media.view_reviews(watchlist_name, media_name)
+
+    await interaction.response.send_message(response)
+
+
 
 bot.run(BOT_TOKEN)
