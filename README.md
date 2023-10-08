@@ -12,7 +12,7 @@ Well... At least in theory. So far, only release 1 and 2 have been implemented.
 |---------------| --- |
 | **Release 1** | Bot that can be run by an individual from their machine with a local memory that can be accessed by all server members. Basic adding, deleteing, viewing, notifications, and permissions functionality is implemented. Basic user experience to use bot for watchlists in servers fullly implemented. |
 | **Release 2** | We will work on adding tags and statuses to individual media for better filtering. More thorough user experience will be implemented, with more specific commands. |
-| **Release 3** | We will add permission to different user to allow whether the specifc user could create or modify the watchlist. Voting implementation will be implemented, possibly with discord event set up as well. |
+| **Release 3** | We will add permissions to different users to determine if the specific user could create or modify the watchlist. Voting implementation will be implemented, possibly with a discord event set up as well. Other features include adding ratings, reviews and descriptions to media. |
 
 ## Please See:
 #### [Code of Conduct](CODE_OF_CONDUCT.md)
