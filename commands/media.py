@@ -722,7 +722,7 @@ def filter_rating(watchlist_name, rating):
     if not watchlist["media"]:
         response = f"The {watchlist_name} watchlist is empty."
     else:
-        # Gets al/ media of at least the given rating.
+        # Gets all media of at least the given rating.
         matched_media = [media_name for media_name, media_content in watchlist["media"].items() if
                          round(media_content["rating"][0], 1) >= float(rating)]  # using issubet instead of == would provide a narrow down search
 
