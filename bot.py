@@ -13,13 +13,13 @@ GUILD_ID = int(os.getenv('GUILD_ID'))
 
 intents = nextcord.Intents.default()
 intents.message_content = True
+intents.members = True
 bot = commands.Bot(intents=intents)
 WATCHLISTFILENAME = "watchlist.json"
 # 8 = Admin
 # 1024 = View Channel (Pretty much everyone)
 EDIT_PERMISSION = 1024
-
-
+ADMINISTRATOR_PERMISSION = nextcord.Permissions(administrator=True)
 # Called once bot is ready for further action.
 @bot.event
 async def on_ready():
@@ -98,7 +98,7 @@ async def watchlist_create(interaction: nextcord.Interaction, watchlist_name):
        Returns:
        None
        """
-    response = watchlist.watchlist_create(watchlist_name)
+    response = watchlist.watchlist_create(interaction, watchlist_name)
     await interaction.response.send_message(response)
 
 
@@ -118,7 +118,7 @@ async def watchlist_delete_all(interaction: nextcord.Interaction):
         None
     """
     # read the json to get all watchlist list
-    response = watchlist.watchlist_delete_all()
+    response = watchlist.watchlist_delete_all(interaction)
     await interaction.response.send_message(response)
 
 
@@ -137,7 +137,7 @@ async def watchlist_delete(interaction: nextcord.Interaction, watchlist_name):
           Returns:
           None
           """
-    response = watchlist.watchlist_delete(watchlist_name)
+    response = watchlist.watchlist_delete(interaction,watchlist_name)
     await interaction.response.send_message(response)
 
 
@@ -588,5 +588,28 @@ async def view_review(interaction: nextcord.Interaction, watchlist_name, media_n
     await interaction.response.send_message(response)
 
 
+@bot.slash_command(guild_ids=[GUILD_ID], name="get_user_id",description="show the user id")
+async def userID(interaction: nextcord.Interaction):
+
+    userID = interaction.user.id
+    response = f"Here is your user id: {userID}"
+
+    await interaction.response.send_message(response)
+
+
+
+@bot.slash_command(guild_ids=[GUILD_ID], name="entitle_permission", description="give the user permission by userID", default_member_permissions=ADMINISTRATOR_PERMISSION)
+async def entitleAdministration(interaction: nextcord.Interaction,user_id):
+    response = await watchlist.grant_admin_role(interaction,user_id)
+    await interaction.response.send_message(response)
+
+@bot.slash_command(guild_ids=[GUILD_ID], name="remove_permission", description="remove the user permission by userID", default_member_permissions=ADMINISTRATOR_PERMISSION)
+async def removeAdministration(interaction: nextcord.Interaction,user_id):
+    response = await watchlist.revoke_admin_role(interaction, user_id)
+    await interaction.response.send_message(response)
+
+
 
 bot.run(BOT_TOKEN)
+
+

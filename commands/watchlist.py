@@ -14,9 +14,10 @@ import utils
 # Vote - votes for a media in a watchlist
 
 WATCHLISTFILENAME = "watchlist.json"
+ADMINISTRATOR_PERMISSION = nextcord.Permissions(administrator=True)
 
 #Creates a new watchlist/
-def watchlist_create(watchlist_name):
+def watchlist_create(interaction: nextcord.Interaction,watchlist_name):
 	"""
 	   Creates a watchlist
 
@@ -26,6 +27,15 @@ def watchlist_create(watchlist_name):
 	   Returns:
 	   The response message
 	   """
+	# Check if the user is the server owner
+	is_owner = interaction.user.id == interaction.guild.owner_id
+
+	# Check if the user has the "Administrator" permission
+	has_admin_permission = interaction.permissions.administrator
+
+	if not (is_owner or has_admin_permission):
+		response = f"Need Administration Permission"
+		return response
 	# read the json to get all watchlist lists
 	watchlist_data = utils.read_watchlist_file(WATCHLISTFILENAME)
 
@@ -105,9 +115,9 @@ def format_media(media, media_values):
     
     return response
 
-    
+
 # Deletes a watchlist
-def watchlist_delete(watchlist_name):
+def watchlist_delete(interaction: nextcord.Interaction,watchlist_name):
 	"""
 	Delete a watchlist
 
@@ -117,6 +127,15 @@ def watchlist_delete(watchlist_name):
 	Returns:
 	The response message
 	"""
+	# Check if the user is the server owner
+	is_owner = interaction.user.id == interaction.guild.owner_id
+
+	# Check if the user has the "Administrator" permission
+	has_admin_permission = interaction.permissions.administrator
+
+	if not (is_owner or has_admin_permission):
+		response = f"Need Administration Permission"
+		return response
 	# read the json to get all watchlist list
 	watchlist_data = utils.read_watchlist_file(WATCHLISTFILENAME)
 
@@ -134,7 +153,7 @@ def watchlist_delete(watchlist_name):
 	return response
 
 # Deletes all watchlist
-def watchlist_delete_all():
+def watchlist_delete_all(interaction: nextcord.Interaction):
 	"""
 	Delete All watchlists
 
@@ -142,6 +161,15 @@ def watchlist_delete_all():
 	Returns:
 	The response message
 	"""
+	# Check if the user is the server owner
+	is_owner = interaction.user.id == interaction.guild.owner_id
+
+	# Check if the user has the "Administrator" permission
+	has_admin_permission = interaction.permissions.administrator
+
+	if not (is_owner or has_admin_permission):
+		response = f"Need Administration Permission"
+		return response
 	watchlist_data = utils.read_watchlist_file(WATCHLISTFILENAME)
 	if len(watchlist_data["watchlists"]) == 0:
 		response = "There are no watchlists for me to delete ¯\_(ツ)_/¯"
@@ -254,3 +282,64 @@ def watchlist_vote(interaction: nextcord.Interaction, watchlist_name, media_name
 			response += f"\n The voting has been completed. The most voted media is **{vote_winner}**"
 	utils.write_watchlist_file(WATCHLISTFILENAME, watchlist_data)
 	return response
+
+
+async def grant_admin_role(interaction, user_id):
+	'''
+	the function is to grant the permission to user so that the user could create and modify the watchlist
+	Args:
+		interaction: The interaction object representing the command invocation.
+		user_id: the user id that need the permission
+
+	Returns:
+
+	'''
+	try:
+		# Attempt to fetch the member from the guild using the target_user_id
+		target_member = await interaction.guild.fetch_member(user_id)
+	except nextcord.NotFound:
+		return f"Target member not found."
+	except nextcord.HTTPException:
+		return f"Failed to fetch the member. Please try again later."
+
+	# Check if the user already has the "Admin" role
+	has_admin_role = any(role.name == "Administrator" for role in target_member.roles)
+
+	if has_admin_role:
+		return f"{target_member.name} already has the Admin role."
+
+	# Check if the "Admin" role already exists in the guild
+	admin_role = nextcord.utils.get(interaction.guild.roles, name="Administrator")
+
+	# If "Admin" role doesn't exist, create it
+	if not admin_role:
+		admin_role = await interaction.guild.create_role(name="Administrator",
+														 permissions=nextcord.Permissions(administrator=True))
+
+	# Add the role to the target member
+	await target_member.add_roles(admin_role)
+
+	return f"Granted Admin permission to {target_member.name}."
+
+async def revoke_admin_role(interaction, user_id):
+	try:
+		# Attempt to fetch the member from the guild using the target_user_id
+		target_member = await interaction.guild.fetch_member(user_id)
+	except nextcord.NotFound:
+		return f"Target member not found."
+	except nextcord.HTTPException:
+		return f"Failed to fetch the member."
+
+	# Check if the user has the "Admin"
+	has_admin_role = any(role.name == "Administrator" for role in target_member.roles)
+
+	if not has_admin_role:
+		return f"{target_member.name} does not have the Admin."
+
+	# Get the "AdminRole" from the guild
+	admin_role = nextcord.utils.get(interaction.guild.roles, name="Administrator")
+
+	# Remove the role from the target member
+	await target_member.remove_roles(admin_role)
+
+	return f"Revoked Admin from {target_member.name}."
