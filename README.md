@@ -12,7 +12,7 @@ Well... At least in theory. So far, only release 1 and 2 have been implemented.
 |---------------| --- |
 | **Release 1** | Bot that can be run by an individual from their machine with a local memory that can be accessed by all server members. Basic adding, deleteing, viewing, notifications, and permissions functionality is implemented. Basic user experience to use bot for watchlists in servers fullly implemented. |
 | **Release 2** | We will work on adding tags and statuses to individual media for better filtering. More thorough user experience will be implemented, with more specific commands. |
-| **Release 3** | We will add API connectiosn to get third party searching and media information to show real world info about media items. Voting implementation will be implemented, possibly with discord event set up as well. |
+| **Release 3** | We will add permissions to different users to determine if the specific user could create or modify the watchlist. Voting implementation will be implemented, possibly with a discord event set up as well. Other features include adding ratings, reviews and descriptions to media. |
 
 ## Please See:
 #### [Code of Conduct](CODE_OF_CONDUCT.md)
@@ -45,6 +45,10 @@ And the following Permissions:
 
 Make sure Message Content Intent is toggled on (above bot permissions):
 ![image](https://github.com/soft310team2/discord-watch-party-bot/assets/100410646/91230df6-c1cc-424f-ba7d-2ac27378cd37)
+
+Make sure Server Members Intent is toggled on (above Message Content Intent):
+![image](https://github.com/soft310team2/discord-watch-party-bot/assets/100254883/f4e4fc76-1354-4f1b-a503-54c60488ca32)
+
 
 Then copy the generated URL, paste it into your browser, and you will be prompted to add the bot to one of your servers. Once the bot is invited, it will not be able to perform any functions until bot.py is configured for your bot's token and your server's guild ID. bot.py will also need to be running with an internet connection for any commands to work.
 
@@ -83,6 +87,11 @@ Use the '/' prefix to issue bot commands in your server's text channels:
 If you type `/popcorn`, you should see a popup list of all of the commands. You can also use the `/help` command for the same list.
 
 ![image](https://github.com/soft310team2/discord-watch-party-bot/assets/100410646/e9fa32f7-edf8-4aeb-9432-3db4ac249bee)
+
+
+#### Give bot permission
+After run bot.py. Go to the server setting and change the bot permission to Administrator
+![image](https://github.com/soft310team2/discord-watch-party-bot/assets/100254883/7803b9a5-89ab-4ec9-bf16-cac7fae44856)
 
 Your bot is now working, hooray!
 
