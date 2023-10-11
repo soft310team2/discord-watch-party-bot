@@ -7,21 +7,19 @@ import utils
 # importing the other python files
 from commands import misc, media, watchlist, participant
 
-
-
 load_dotenv()
 BOT_TOKEN = os.getenv('DISCORD_TOKEN')
 GUILD_ID = int(os.getenv('GUILD_ID'))
 
 intents = nextcord.Intents.default()
 intents.message_content = True
+intents.members = True
 bot = commands.Bot(intents=intents)
 WATCHLISTFILENAME = "watchlist.json"
 # 8 = Admin
 # 1024 = View Channel (Pretty much everyone)
 EDIT_PERMISSION = 1024
-
-
+ADMINISTRATOR_PERMISSION = nextcord.Permissions(administrator=True)
 # Called once bot is ready for further action.
 @bot.event
 async def on_ready():
@@ -38,15 +36,16 @@ async def ping(interaction: nextcord.Interaction):
     response = misc.ping()
     await interaction.response.send_message(response)
 
+
 @bot.slash_command(guild_ids=[GUILD_ID], name="popcorn", description="scoop some popcorn!")
 async def popcorn(interaction: nextcord.Interaction):
     response = misc.popcorn(interaction)
     await interaction.response.send_message(response)
 
+
 # Help Command
 @bot.slash_command(guild_ids=[GUILD_ID], name="help", description="lists all commands and descriptions")
 async def help(interaction: nextcord.Interaction):
-
     """
 	   Displays all the commands of the bot
 
@@ -83,6 +82,7 @@ async def watchlist_see_all(interaction: nextcord.Interaction):
     response = watchlist.watchlist_see_all()
     await interaction.response.send_message(response)
 
+
 # Functionality located in the watchlist.py in commands folder
 @bot.slash_command(guild_ids=[GUILD_ID], name="create",
                    description="create a new watchlist",
@@ -98,13 +98,14 @@ async def watchlist_create(interaction: nextcord.Interaction, watchlist_name):
        Returns:
        None
        """
-    response = watchlist.watchlist_create(watchlist_name)
+    response = watchlist.watchlist_create(interaction, watchlist_name)
     await interaction.response.send_message(response)
+
 
 # Located in the watchlist.py in commands folder
 @bot.slash_command(guild_ids=[GUILD_ID],
-                   name="deleteall", 
-                   description="delete all existing watchlists", 
+                   name="deleteall",
+                   description="delete all existing watchlists",
                    default_member_permissions=EDIT_PERMISSION)
 async def watchlist_delete_all(interaction: nextcord.Interaction):
     """
@@ -117,8 +118,9 @@ async def watchlist_delete_all(interaction: nextcord.Interaction):
         None
     """
     # read the json to get all watchlist list
-    response = watchlist.watchlist_delete_all()
+    response = watchlist.watchlist_delete_all(interaction)
     await interaction.response.send_message(response)
+
 
 # Functionality located in the watchlist.py in commands folder
 @bot.slash_command(guild_ids=[GUILD_ID], name="delete",
@@ -135,8 +137,9 @@ async def watchlist_delete(interaction: nextcord.Interaction, watchlist_name):
           Returns:
           None
           """
-    response = watchlist.watchlist_delete(watchlist_name)
+    response = watchlist.watchlist_delete(interaction,watchlist_name)
     await interaction.response.send_message(response)
+
 
 @bot.slash_command(guild_ids=[GUILD_ID], name="history", description="view all the watched medias in a watchlist")
 async def watchlist_history(interaction: nextcord.Interaction, watchlist_name):
@@ -153,7 +156,33 @@ async def watchlist_history(interaction: nextcord.Interaction, watchlist_name):
     response = watchlist.watchlist_history(watchlist_name)
     await interaction.response.send_message(response)
 
+@bot.slash_command(guild_ids=[GUILD_ID], name="start_vote", description="start a vote to determine what media to watch")
+async def watchlist_vote_start(interaction: nextcord.Interaction, watchlist_name):
+    """
+    Notifies all the users in a watchlist that a vote is starting for all unwatched media in a watchlist
+    Args:
+        interaction(nextcord.Interaction): The interaction object representing the command invocation.
+        watchlist_name: the watchlist name that the vote will start
 
+    Returns:None
+
+    """
+    response = watchlist.watchlist_start_vote(interaction, watchlist_name)
+    await interaction.response.send_message(response)
+
+@bot.slash_command(guild_ids=[GUILD_ID], name="vote", description="add a vote to the watchlist")
+async def watchlist_vote(interaction: nextcord.Interaction, watchlist_name, media_name):
+    """
+
+    Args:
+        interaction: The interaction object representing the command invocation.
+        watchlist_name: the watchlist name
+        media_name: the media that the user is voting for
+    Returns:
+    """
+
+    response = watchlist.watchlist_vote(interaction, watchlist_name, media_name)
+    await interaction.response.send_message(response)
 # ---------------------------------------------------------------------------
 # Media Commands - Add media to watchlist
 # ---------------------------------------------------------------------------
@@ -200,8 +229,8 @@ async def watchlist_delete_media(interaction: nextcord.Interaction, media_name, 
     	    """
     response = media.watchlist_delete_media(media_name, watchlist_name)
     await interaction.response.send_message(response)
-    
-    
+
+
 # ---------------------------------------------------------------------------
 # Media Commands - Select a random media from watchlist
 # ---------------------------------------------------------------------------
@@ -289,11 +318,13 @@ async def add_tags(interaction: nextcord.Interaction, watchlist_name, media_name
     response = media.add_tags(watchlist_name, media_name, tags)
     await interaction.response.send_message(response)
 
+
 # ---------------------------------------------------------------------------
 # Media Commands - Deletes a tag to a specified media in a watchlist
 # ---------------------------------------------------------------------------
 # Functionality located in the media.py in commands folder
-@bot.slash_command(guild_ids=[GUILD_ID], name="delete_tags", description="Remove tags from a media in watchlist", default_member_permissions=EDIT_PERMISSION)
+@bot.slash_command(guild_ids=[GUILD_ID], name="delete_tags", description="Remove tags from a media in watchlist",
+                   default_member_permissions=EDIT_PERMISSION)
 async def delete_tags(interaction: nextcord.Interaction, watchlist_name, media_name, tags):
     """
     Allows users to delete tags from certain media items in some watchlist
@@ -334,6 +365,7 @@ async def watchlist_update_status(interaction: nextcord.Interaction, watch_statu
     response = media.watchlist_update_status(watch_status, media_name, watchlist_name)
     await interaction.response.send_message(response)
 
+
 # ---------------------------------------------------------------------------
 # Media Commands - Filter media by a tag
 # ---------------------------------------------------------------------------
@@ -354,6 +386,7 @@ async def filter_tags(interaction: nextcord.Interaction, watchlist_name, tags):
     """
     response = media.filter_tags(watchlist_name, tags)
     await interaction.response.send_message(response)
+
 
 # ---------------------------------------------------------------------------
 # Media Commands - Pick a random media based on tag
@@ -377,7 +410,6 @@ async def random_tags(interaction: nextcord.Interaction, watchlist_name, tags):
     await interaction.response.send_message(response)
 
 
-
 # ---------------------------------------------------------------------------
 # Participant Commands - Join, leave, view or notifty watchlist participants
 # ---------------------------------------------------------------------------
@@ -397,6 +429,7 @@ async def watchlist_join(interaction: nextcord.Interaction, watchlist_name):
     response = participant.watchlist_join(interaction, watchlist_name)
     await interaction.response.send_message(response)
 
+
 # Functionality located in the participant.py in commands folder
 @bot.slash_command(guild_ids=[GUILD_ID], name="leave", description="leave from a joined watchlist")
 async def watchlist_leave(interaction: nextcord.Interaction, watchlist_name):
@@ -412,6 +445,7 @@ async def watchlist_leave(interaction: nextcord.Interaction, watchlist_name):
             """
     response = participant.watchlist_leave(interaction, watchlist_name)
     await interaction.response.send_message(response)
+
 
 # Functionality located in the participant.py in commands folder
 @bot.slash_command(guild_ids=[GUILD_ID], name="participants", description="view a watchlist's participants")
@@ -429,6 +463,7 @@ async def watchlist_participants(interaction: nextcord.Interaction, watchlist_na
     response = await participant.watchlist_particpants(bot, watchlist_name)
     await interaction.response.send_message(response)
 
+
 # Functionality located in the participant.py in commands folder
 @bot.slash_command(guild_ids=[GUILD_ID], name="poke", description="notify all participants of a watchlist")
 async def watchlist_notifyall(interaction: nextcord.Interaction, watchlist_name):
@@ -445,5 +480,180 @@ async def watchlist_notifyall(interaction: nextcord.Interaction, watchlist_name)
     response = participant.watchlist_notifyall(watchlist_name)
     await interaction.response.send_message(response)
 
+# Functionality located in the participant.py in commands folder
+@bot.slash_command(guild_ids=[GUILD_ID], name="event", description="Create a watch party event for users")
+async def create_event(interaction: nextcord.Interaction, media_name, location, date):
+    """
+    Create a discord event to watch the media
 
+    Parameters:
+    interaction (nextcord.Interaction): The interaction object representing the command invocation.
+    media_name (str): The name of the media the event is about
+    location (str): Where the media watching event will take place
+    date (str): The date and time of when the event will take place
+
+    Returns:
+    None
+    """
+    response = await participant.create_event(interaction, media_name, location, date)
+    await interaction.response.send_message(f"Created a watch party event for {media_name}!")
+
+# ---------------------------------------------------------------------------
+# Media Commands - Add description to a media
+# ---------------------------------------------------------------------------
+# Functionality located in the media.py in commands folder
+@bot.slash_command(guild_ids=[GUILD_ID], name="add_description", description="add the description of a media")
+async def add_description(interaction: nextcord.Interaction, watchlist_name, media_name, description):
+    """
+	Add the description to a particular media
+
+	Parameters:
+    interaction (nextcord.Interaction): The interaction object representing the command invocation.
+    watchlist_name (str): The name of the watchlist to which the watched movies going to be displayed
+    media_name (str): The name of the movie or show to be examined.
+    description: the description of that media
+
+    Returns:
+    None
+    """
+    response = media.add_description(watchlist_name, media_name, description)
+    await interaction.response.send_message(response)
+
+
+# ---------------------------------------------------------------------------
+# Media Commands - Delete description of a media
+# ---------------------------------------------------------------------------
+# Functionality located in the media.py in commands folder
+@bot.slash_command(guild_ids=[GUILD_ID], name="delete_description", description="delete the description of a media")
+async def delete_description(interaction: nextcord.Interaction, watchlist_name, media_name):
+    """
+	Delete the description of a particular media
+
+	Parameters:
+    interaction (nextcord.Interaction): The interaction object representing the command invocation.
+    watchlist_name (str): The name of the watchlist to which the watched movies going to be displayed
+    media_name (str): The name of the movie or show to be examined.
+    description: the description of that media
+
+    Returns:
+    None
+    """
+    response = media.delete_description(watchlist_name, media_name)
+    await interaction.response.send_message(response)
+
+
+# ---------------------------------------------------------------------------
+# Media Commands - View description to a media
+# ---------------------------------------------------------------------------
+# Functionality located in the media.py in commands folder
+@bot.slash_command(guild_ids=[GUILD_ID], name="description", description="view the description of a media")
+async def watchlist_description(interaction: nextcord.Interaction, watchlist_name, media_name):
+    """
+    View the description of a particular media
+
+    Parameters:
+    interaction (nextcord.Interaction): The interaction object representing the command invocation.
+    watchlist_name (str): The name of the watchlist to which the watched movies going to be displayed
+    media_name (str): The name of the movie or show to be examined.
+
+    Returns:
+    None
+    """
+    response = media.watchlist_description(watchlist_name, media_name)
+    await interaction.response.send_message(response)
+
+@bot.slash_command(guild_ids=[GUILD_ID], name="add_review", description="Add a review to an existing media")
+async def add_review(interaction: nextcord.Interaction, watchlist_name, media_name, review_text):
+    """
+    Add a review to a media item in some watchlist
+
+    Args:
+        interaction: The interaction object representing the command invocation.
+        watchlist_name: The name of the watchlist in which the media item specified is located in
+        media_name: The name of the media item which the user wishes to review
+        review_text: The review the user wishes to add to the media item
+
+    Returns:
+        None
+
+    """
+    response = media.add_review(watchlist_name, media_name, review_text, interaction.user.name)
+    await interaction.response.send_message(response)
+
+
+@bot.slash_command(guild_ids=[GUILD_ID], name="see_reviews", description="See all reviews for a media")
+async def view_review(interaction: nextcord.Interaction, watchlist_name, media_name):
+    response = media.view_reviews(watchlist_name, media_name)
+
+    await interaction.response.send_message(response)
+
+@bot.slash_command(guild_ids=[GUILD_ID], name="add_rating", description="Add a rating to an existing media")
+async def add_review(interaction: nextcord.Interaction, watchlist_name, media_name, rating):
+    """
+    Add a rating to a media item in some watchlist
+
+    Args:
+        interaction: The interaction object representing the command invocation.
+        watchlist_name: The name of the watchlist in which the media item specified is located in
+        media_name: The name of the media item which you wish to rate
+        rating: A 0-5 rating you wish to add to the media item. 
+
+    Returns:
+        None
+
+    """
+    response = media.add_rating(rating, media_name, watchlist_name)
+    await interaction.response.send_message(response)
+
+@bot.slash_command(guild_ids=[GUILD_ID], name="get_user_id",description="show the user id")
+async def userID(interaction: nextcord.Interaction):
+
+    userID = interaction.user.id
+    response = f"Here is your user id: {userID}"
+
+    await interaction.response.send_message(response)
+
+
+
+@bot.slash_command(guild_ids=[GUILD_ID], name="entitle_permission", description="give the user permission by userID", default_member_permissions=ADMINISTRATOR_PERMISSION)
+async def entitleAdministration(interaction: nextcord.Interaction,user_id):
+    response = await watchlist.grant_admin_role(interaction,user_id)
+    await interaction.response.send_message(response)
+
+@bot.slash_command(guild_ids=[GUILD_ID], name="remove_permission", description="remove the user permission by userID", default_member_permissions=ADMINISTRATOR_PERMISSION)
+async def removeAdministration(interaction: nextcord.Interaction,user_id):
+    response = await watchlist.revoke_admin_role(interaction, user_id)
+    await interaction.response.send_message(response)
+
+
+
+@bot.slash_command(guild_ids=[GUILD_ID], name="see_rating", description="See average rating information of all media in a watchlist")
+async def view_rating(interaction: nextcord.Interaction, watchlist_name):
+    response = media.view_rating(watchlist_name)
+
+    await interaction.response.send_message(response)
+    
+# ---------------------------------------------------------------------------
+# Media Commands - Filter media by a rating
+# ---------------------------------------------------------------------------
+# Functionality located in the media.py in commands folder
+@bot.slash_command(guild_ids=[GUILD_ID], name="filter_by_rating",
+                   description="view filtered medias by rating in a watchlist")
+async def filter_rating(interaction: nextcord.Interaction, watchlist_name, rating):
+    """
+    Display all the media with at least a given rating in a watchlist.
+    Args:
+        interaction: The interaction object representing the command invocation.
+        watchlist_name: The name of the watchlist to which the watched movies going to be displayed
+        rating: The rating that media must meet or have above to be displayed
+
+    Returns:
+    None
+
+    """
+    response = media.filter_rating(watchlist_name, rating)
+    await interaction.response.send_message(response)
+    
 bot.run(BOT_TOKEN)
+
+

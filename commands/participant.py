@@ -1,3 +1,5 @@
+import datetime
+
 import nextcord
 import utils
 
@@ -138,3 +140,22 @@ def watchlist_notifyall(watchlist_name):
 	response = f'A watch party for the {watchlist_name} watchlist is starting soon! {mentions}'
 
 	return response
+
+async def create_event(interaction, media_name, location, date):
+	#Convert the user inputted date into a datetime object
+	datetime_format = "%d-%m-%Y %H:%M"  # format: YYYY-MM-DD HH:MM
+	date_time = datetime.datetime.strptime(date, datetime_format)
+	date_time = date_time.replace(tzinfo=datetime.timezone(datetime.timedelta(hours=13)))
+
+	#Set the metadata as per Discord API requirements
+	metadata = nextcord.EntityMetadata()
+	metadata.location = location
+
+	event = await interaction.guild.create_scheduled_event(
+		name=f"Watch Party: {media_name}",
+		entity_type=nextcord.ScheduledEventEntityType.external,
+		start_time=date_time,
+		end_time=date_time + datetime.timedelta(minutes=30),
+		description=f"Join us in watching {media_name}. The location is {location}.",
+		metadata=metadata
+	)
