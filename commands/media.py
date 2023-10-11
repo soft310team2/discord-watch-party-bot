@@ -12,6 +12,9 @@ import utils
 # Status - updates the watch status of a media
 # Filter_by_tag - displays media based on a tag
 # Random_select_by_tag - selects a random media to watch based on a tag
+# Add_rating - adds a rating to a media
+# View_rating - view a rating of a media
+# Filter_rating - displays media based on a rating
 
 
 WATCHLISTFILENAME = "watchlist.json"
@@ -43,7 +46,7 @@ def watchlist_add(media_name, watchlist_name):
     # Check if media already exists in watchlist
     if media_name not in watchlist["media"]:
         # Sets media to default unwatched and makes it a dictionary so easier access
-        watchlist["media"][media_name] = {"status": "unwatched", "tags": [], "reviews": [], "description": "none"}
+        watchlist["media"][media_name] = {"status": "unwatched", "tags": [], "reviews": [], "description": "none", "rating": [-1, 0]}
         response = f"Added *{media_name}* to the **{watchlist_name}** watchlist!"
     else:
         response = f"*{media_name}* is already in the **{watchlist_name}** watchlist!"
@@ -594,5 +597,138 @@ def view_reviews(watchlist_name, media_name):
 
     return response
 
+# Adds rating to media item
+def add_rating(rating, media_name, watchlist_name):
+    """
+	    Adds rating of specified a movie or show in a watchlist.
+
+	    Parameters:
+	    rating (str): The rating of the movie or show (0-5)
+	    media_name (str): The name of the movie or show to add rating to.
+	    watchlist_name (str): The name of the watchlist the movie or show is in.
+
+	    Returns:
+	    The response message
+	    """
+     # Checks if valid rating input
+    if not is_rating_valid(rating):
+        return "Invalid rating. Please choose a rating between 0 and 5"
+    
+    # Read the JSON data
+    watchlist_data = utils.read_watchlist_file(WATCHLISTFILENAME)
+
+    # Check if the watchlist exists
+    watchlist, response = utils.get_watchlist(watchlist_data, watchlist_name)
+    if watchlist is None:
+        return response
+    # Check if media already exists in watchlist
+    if media_name in watchlist["media"]:
+        media = watchlist["media"].get(media_name)
+        new_rating = calc_average_rating(float(rating), media["rating"])
+        media["rating"] = new_rating
+        response = f"Added rating of **{rating}** to *{media_name}* in the **{watchlist_name}** watchlist!"
+    else:
+        response = f"*{media_name}* is not in the **{watchlist_name}** watchlist! \nYou can add it with `/add {media_name}`"
+
+    # Write the updated JSON data
+    utils.write_watchlist_file(WATCHLISTFILENAME, watchlist_data)
+    
+    return response
 
 
+def calc_average_rating(rating, current_rating_info):
+    # Keeps rating rounded to be consistent
+    rating = round(rating, 1)
+    # if not rating has been given previously
+    if current_rating_info[0] == -1:
+        return [rating, 1]
+    else:
+        # calculates new average rating
+        num_of_ratings = current_rating_info[1] + 1
+        new_rating = ((current_rating_info[0] * current_rating_info[1]) + rating) / num_of_ratings
+        return [new_rating, num_of_ratings]
+    
+def is_rating_valid(rating):
+    
+    try:
+        rating = float(rating)
+        if 0 <= rating <= 5:
+            return True
+    except ValueError: 
+        pass
+    
+    return False
+    
+# View ratings of all media in a watchlist
+def view_rating(watchlist_name):
+    """
+	    View ratings of all media in a watchlist
+
+	    Parameters:
+	    watchlist_name (str): The name of the watchlist to show rating info on.
+
+	    Returns:
+	    The response message
+	    """
+
+    # Read the JSON data
+    watchlist_data = utils.read_watchlist_file(WATCHLISTFILENAME)
+
+    # Check if the watchlist exists
+    watchlist, response = utils.get_watchlist(watchlist_data, watchlist_name)
+    if watchlist is None:
+        return response
+    
+    if len(watchlist["media"]) == 0:
+        response = f"The **{watchlist_name}** watchlist is empty."
+    else:
+        response = f"Here are all of the items and it's rating in the **{watchlist_name}** watchlist!\n"
+        for media in watchlist["media"]: 
+            media_content = watchlist["media"].get(media)# Print every media item
+            rating = media_content["rating"][0]
+            num_of_rating = media_content["rating"][1]
+            if rating == -1:
+                response += f"- {media}: No ratings have been given\n"
+            else:
+                response += f"- {media}: {rating:.1f} ({num_of_rating})\n"
+
+    return response
+
+# Shows media based on rating (if its equal to or higher it is displayed)
+def filter_rating(watchlist_name, rating):
+    """
+	   Display all the media that filtered based on rating in a watchlist.
+	   Args:
+	       watchlist_name: The name of the watchlist to which the watched movies going to be displayed
+	       tags: The rating that want to be based on to filter
+
+	   Returns:
+	   The response message
+
+	   """
+
+    # Read the JSON data
+    watchlist_data = utils.read_watchlist_file(WATCHLISTFILENAME)
+    
+
+    # Checks if valid rating input
+    if not is_rating_valid(rating):
+        return "Invalid rating. Please choose a rating between 0 and 5"
+
+    # Check if the watchlist exists
+    watchlist, response = utils.get_watchlist(watchlist_data, watchlist_name)
+    if watchlist is None:
+        return response
+    if not watchlist["media"]:
+        response = f"The {watchlist_name} watchlist is empty."
+    else:
+        # Gets all media of at least the given rating.
+        matched_media = [media_name for media_name, media_content in watchlist["media"].items() if
+                         round(media_content["rating"][0], 1) >= float(rating)]  # using issubet instead of == would provide a narrow down search
+
+        if matched_media:
+            response = f"Here are all of the filtered medias in the {watchlist_name} watchlist with a rating of at least **{rating}**:\n"
+            response += "\n".join([f"- {name}: {watchlist['media'].get(name)['rating'][0]:.1f} ({watchlist['media'].get(name)['rating'][1]})" for name in matched_media])
+        else:
+            response = f"There is no media with the rating **{rating}** or above."
+    return response

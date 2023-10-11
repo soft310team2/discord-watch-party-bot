@@ -587,6 +587,23 @@ async def view_review(interaction: nextcord.Interaction, watchlist_name, media_n
 
     await interaction.response.send_message(response)
 
+@bot.slash_command(guild_ids=[GUILD_ID], name="add_rating", description="Add a rating to an existing media")
+async def add_review(interaction: nextcord.Interaction, watchlist_name, media_name, rating):
+    """
+    Add a rating to a media item in some watchlist
+
+    Args:
+        interaction: The interaction object representing the command invocation.
+        watchlist_name: The name of the watchlist in which the media item specified is located in
+        media_name: The name of the media item which you wish to rate
+        rating: A 0-5 rating you wish to add to the media item. 
+
+    Returns:
+        None
+
+    """
+    response = media.add_rating(rating, media_name, watchlist_name)
+    await interaction.response.send_message(response)
 
 @bot.slash_command(guild_ids=[GUILD_ID], name="get_user_id",description="show the user id")
 async def userID(interaction: nextcord.Interaction):
@@ -610,6 +627,33 @@ async def removeAdministration(interaction: nextcord.Interaction,user_id):
 
 
 
+@bot.slash_command(guild_ids=[GUILD_ID], name="see_rating", description="See average rating information of all media in a watchlist")
+async def view_rating(interaction: nextcord.Interaction, watchlist_name):
+    response = media.view_rating(watchlist_name)
+
+    await interaction.response.send_message(response)
+    
+# ---------------------------------------------------------------------------
+# Media Commands - Filter media by a rating
+# ---------------------------------------------------------------------------
+# Functionality located in the media.py in commands folder
+@bot.slash_command(guild_ids=[GUILD_ID], name="filter_by_rating",
+                   description="view filtered medias by rating in a watchlist")
+async def filter_rating(interaction: nextcord.Interaction, watchlist_name, rating):
+    """
+    Display all the media with at least a given rating in a watchlist.
+    Args:
+        interaction: The interaction object representing the command invocation.
+        watchlist_name: The name of the watchlist to which the watched movies going to be displayed
+        rating: The rating that media must meet or have above to be displayed
+
+    Returns:
+    None
+
+    """
+    response = media.filter_rating(watchlist_name, rating)
+    await interaction.response.send_message(response)
+    
 bot.run(BOT_TOKEN)
 
 
