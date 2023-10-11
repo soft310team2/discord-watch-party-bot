@@ -6,8 +6,6 @@ Add this bot to your Discord server and let it help you select the best movie or
 
 Popcorn is not just great at selecting media based on you and your friends' preferences, it also keeps track of what you've already watched!
 
-Well... At least in theory. So far, only release 1 and 2 have been implemented.
-
 | Release       | Description |
 |---------------| --- |
 | **Release 1** | Bot that can be run by an individual from their machine with a local memory that can be accessed by all server members. Basic adding, deleteing, viewing, notifications, and permissions functionality is implemented. Basic user experience to use bot for watchlists in servers fullly implemented. |
