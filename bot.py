@@ -44,22 +44,20 @@ async def popcorn(interaction: nextcord.Interaction):
 
 
 # Help Command
-@bot.slash_command(guild_ids=[GUILD_ID], name="help", description="lists all commands and descriptions")
-async def help(interaction: nextcord.Interaction):
+@bot.slash_command(guild_ids=[GUILD_ID], name="help", description="lists all commands and descriptions of a particular command group")
+async def help(interaction: nextcord.Interaction, command_group):
     """
-	   Displays all the commands of the bot
+    Displays all the commands of the bot given a command group
+    
+    Args:
+        interaction (nextcord.Interaction): The interaction object representing the command invocation.
+        command_group str: The command group - watchlist, media or participant
 
-
-	   Parameters:
-	   interaction (nextcord.Interaction): The interaction object representing the command invocation.
-
-
-	   Returns:
-	   None
-	   """
-    response = misc.help()
-    await interaction.response.send_message(response)
-
+    Returns:
+    None
+	"""
+    response = misc.help(command_group)
+    await interaction.response.send_message(response) 
 
 # ---------------------------------------------------------------------------
 # Watchlist Commands - Create, delete,see watchlists
@@ -183,6 +181,7 @@ async def watchlist_vote(interaction: nextcord.Interaction, watchlist_name, medi
 
     response = watchlist.watchlist_vote(interaction, watchlist_name, media_name)
     await interaction.response.send_message(response)
+    
 # ---------------------------------------------------------------------------
 # Media Commands - Add media to watchlist
 # ---------------------------------------------------------------------------
@@ -587,24 +586,6 @@ async def view_review(interaction: nextcord.Interaction, watchlist_name, media_n
 
     await interaction.response.send_message(response)
 
-@bot.slash_command(guild_ids=[GUILD_ID], name="add_rating", description="Add a rating to an existing media")
-async def add_review(interaction: nextcord.Interaction, watchlist_name, media_name, rating):
-    """
-    Add a rating to a media item in some watchlist
-
-    Args:
-        interaction: The interaction object representing the command invocation.
-        watchlist_name: The name of the watchlist in which the media item specified is located in
-        media_name: The name of the media item which you wish to rate
-        rating: A 0-5 rating you wish to add to the media item. 
-
-    Returns:
-        None
-
-    """
-    response = media.add_rating(rating, media_name, watchlist_name)
-    await interaction.response.send_message(response)
-
 @bot.slash_command(guild_ids=[GUILD_ID], name="get_user_id",description="show the user id")
 async def userID(interaction: nextcord.Interaction):
 
@@ -625,7 +606,23 @@ async def removeAdministration(interaction: nextcord.Interaction,user_id):
     response = await watchlist.revoke_admin_role(interaction, user_id)
     await interaction.response.send_message(response)
 
+@bot.slash_command(guild_ids=[GUILD_ID], name="add_rating", description="Add a rating to an existing media")
+async def add_rating(interaction: nextcord.Interaction, watchlist_name, media_name, rating):
+    """
+    Add a rating to a media item in some watchlist
 
+    Args:
+        interaction: The interaction object representing the command invocation.
+        watchlist_name: The name of the watchlist in which the media item specified is located in
+        media_name: The name of the media item which you wish to rate
+        rating: A 0-5 rating you wish to add to the media item. 
+
+    Returns:
+        None
+
+    """
+    response = media.add_rating(rating, media_name, watchlist_name)
+    await interaction.response.send_message(response)
 
 @bot.slash_command(guild_ids=[GUILD_ID], name="see_rating", description="See average rating information of all media in a watchlist")
 async def view_rating(interaction: nextcord.Interaction, watchlist_name):
