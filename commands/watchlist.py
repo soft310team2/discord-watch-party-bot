@@ -244,6 +244,7 @@ def watchlist_start_vote(interaction: nextcord.Interaction, watchlist_name):
 		response += f"To vote do /vote **{watchlist_name}** *media* that you want to vote for. You must be a participant of the watchlist to vote.\nVoting closes once everyone in the watchlist participants have voted"
 	utils.write_watchlist_file(WATCHLISTFILENAME, watchlist_data)
 	return response
+
 def watchlist_vote(interaction: nextcord.Interaction, watchlist_name, media_name):
 	"""
 
